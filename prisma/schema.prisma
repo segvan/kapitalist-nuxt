@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Stable {
+  id String @id
+  isDefault Boolean @default(false)
+}
+
+model Asset {
+  id String @id
+}
+
+model JobsHistory {
+  id String @id
+  name String
+  timestamp DateTime
+}
+
+model AssetPrices {
+  id String @id
+  price Decimal
+  timestamp DateTime
+}
+
+model PriceNotifications {
+  id String @id
+  timestamp DateTime
+}
+
+model Trades {
+  id BigInt @id
+  symbol String
+  timestamp DateTime
+  qty Decimal
+  quoteQty Decimal
+  price Decimal
+}
+
+model TradesAggr {
+  symbol String @id
+  qty Decimal
+  quoteQty Decimal
+  avgPrice Decimal
+  timestamp DateTime
+}

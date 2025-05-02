@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+
+  kapitalist-db:
+    image: postgres
+    container_name: kapitalist-db
+    restart: always
+    ports:
+      - 5432:5432
+    volumes: 
+      - kapitalistdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=kapitalist
+      - POSTGRES_DB=kapitalist
+      - POSTGRES_PASSWORD=Qwer!234
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    ports:
+      - 9010:80
+    depends_on: 
+      - kapitalist-db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=postgres_password
+
+volumes: 
+  kapitalistdata:
