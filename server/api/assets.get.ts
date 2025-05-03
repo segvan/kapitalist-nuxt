@@ -1,9 +1,7 @@
-import {PrismaClient} from '@prisma/client'
 import type {AssetModel} from "~/lib/apiModels";
+import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async () => {
-  const db = new PrismaClient()
-  const assets = await db.asset.findMany();
-
+  const assets = await prisma.asset.findMany();
   return assets.map(asset => asset as AssetModel);
 })

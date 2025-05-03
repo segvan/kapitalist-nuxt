@@ -25,7 +25,7 @@ const handleLogin = async (e: Event) => {
 
     if (status.value === 'success') {
       const redirectUrl = route.query[LOGIN_REDIRECT_QS_NAME] || '/';
-      router.push(redirectUrl.toString());
+      await router.push(redirectUrl.toString());
       return;
     } else {
       password.value = '';

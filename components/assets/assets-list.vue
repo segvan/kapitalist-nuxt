@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import type {AssetModel} from "~/lib/models/asset";
 import DeleteAsset from "~/components/assets/delete-asset.vue";
 import AddAsset from "~/components/assets/add-asset.vue";
 
-interface AssetsListProps {
-  data: AssetModel[];
-}
-
-defineProps<AssetsListProps>();
+const {data: assets} = await useFetch('/api/assets', {lazy: true});
 </script>
 
 <template>
@@ -18,14 +13,14 @@ defineProps<AssetsListProps>();
       </div>
     </div>
     <div class="tags are-large">
-      <span
-          v-for="asset in data"
+      <div
+          v-for="asset in assets"
           :key="asset.id"
           class="tag is-primary is-light"
       >
         <h1 class="is-size-4 is-size-3-desktop has-text-weight-medium">{{ asset.id }}</h1>
         <DeleteAsset :asset-id="asset.id"/>
-      </span>
+      </div>
     </div>
   </div>
 </template>
