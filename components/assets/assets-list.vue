@@ -2,7 +2,15 @@
 import DeleteAsset from "~/components/assets/delete-asset.vue";
 import AddAsset from "~/components/assets/add-asset.vue";
 
-const {data: assets} = await useFetch('/api/assets', {lazy: true});
+const {data: assets, error} = await useFetch('/api/assets', {
+  lazy: true,
+  headers: useRequestHeaders(['cookie']),
+});
+
+if (error?.value?.status === 401) {
+  navigateTo('/login');
+}
+
 </script>
 
 <template>

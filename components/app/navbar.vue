@@ -1,6 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import {ref, computed} from 'vue';
+import {useRoute} from 'vue-router';
+import {clearUserSession} from "~/lib/localStorage.js";
+import {SESSION_COOKIE_NAME} from "~/lib/auth.js";
 
 const route = useRoute();
 const isActive = ref(false);
@@ -16,13 +18,19 @@ const toggleNavbar = () => {
 const closeNavbar = () => {
   isActive.value = false;
 };
+
+const logout = async () => {
+  await useFetch('/api/logout', {method: 'Post', lazy: true})
+  clearUserSession();
+  closeNavbar();
+}
 </script>
 
 <template>
   <nav v-if="!shouldHideNavbar" class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <img src="/logo192.png" alt="" width="32" height="32" >
+        <img src="/logo192.png" alt="" width="32" height="32">
       </div>
       <a
           role="button"
@@ -72,8 +80,8 @@ const closeNavbar = () => {
             <div class="navbar-item">
               s.secure.one
             </div>
-            <hr class="navbar-divider" >
-            <NuxtLink to="/login" class="navbar-item" @click="closeNavbar">
+            <hr class="navbar-divider">
+            <NuxtLink to="/login" class="navbar-item" @click="logout">
               Logout
             </NuxtLink>
           </div>

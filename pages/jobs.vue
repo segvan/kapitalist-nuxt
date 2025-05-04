@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import JobsHistory from "~/components/jobs-history.vue";
+
+definePageMeta({
+  middleware: ['auth',]
+});
 </script>
 
 <template>

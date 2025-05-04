@@ -1,7 +1,12 @@
 <script setup lang="ts">
-const {data: jobs} = await useFetch('/api/jobs', {lazy: true});
 
-function parseDate(date: Date): string {
+const {data: jobs} = await useFetch('/api/jobs', {
+  lazy: true,
+  headers: useRequestHeaders(['cookie']),
+});
+
+function parseDate(date: Date | string): string {
+  date = new Date(date);
   const curr_sec = addTrailingZero(date.getSeconds());
   const curr_min = addTrailingZero(date.getMinutes());
   const curr_hour = addTrailingZero(date.getHours());

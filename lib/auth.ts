@@ -1,7 +1,6 @@
-import {jwtVerify} from "jose";
+import {type JWTPayload, jwtVerify} from "jose";
 
 export const SESSION_COOKIE_NAME = "session";
-export const USERID_HEADER_NAME = "x-authenticated-userid";
 export const LOGIN_REDIRECT_QS_NAME = "next";
 
 export function getJwtSecretKey(): Uint8Array {
@@ -13,7 +12,7 @@ export function getJwtSecretKey(): Uint8Array {
   return new TextEncoder().encode(secret);
 }
 
-export async function verifyJwtToken(token: string): Promise<any | null> {
+export async function verifyJwtToken(token: string): Promise<JWTPayload | null> {
   try {
     const {payload} = await jwtVerify(token, getJwtSecretKey());
     return payload;

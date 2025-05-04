@@ -3,6 +3,7 @@
 import {ref} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
 import {LOGIN_REDIRECT_QS_NAME} from "~/lib/auth";
+import {saveUserSession} from "~/lib/localStorage";
 
 const router = useRouter();
 const route = useRoute();
@@ -15,7 +16,7 @@ const handleLogin = async (e: Event) => {
   e.preventDefault();
 
   try {
-    const {status, error: apiError} = await useFetch('/api/login', {
+    const {status, error: apiError, data} = await useFetch('/api/login', {
       method: 'POST',
       body: JSON.stringify({
         username: username.value,
@@ -24,6 +25,7 @@ const handleLogin = async (e: Event) => {
     });
 
     if (status.value === 'success') {
+      saveUserSession(data.value);
       const redirectUrl = route.query[LOGIN_REDIRECT_QS_NAME] || '/';
       await router.push(redirectUrl.toString());
       return;
