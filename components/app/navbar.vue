@@ -2,7 +2,6 @@
 import {ref, computed} from 'vue';
 import {useRoute} from 'vue-router';
 import {clearUserSession} from "~/lib/localStorage.js";
-import {SESSION_COOKIE_NAME} from "~/lib/auth.js";
 
 const route = useRoute();
 const isActive = ref(false);

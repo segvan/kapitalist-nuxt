@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
   return {
     username: user.username,
     email: user.email,
-  };
+  } as UserModel;
 })
 
 const getLoginData = async (event: H3Event): Promise<LoginDataModel> => {
