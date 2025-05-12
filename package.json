@@ -4,7 +4,7 @@
   "type": "module",
   "prisma": {
     "schema": "./prisma/schema.prisma",
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx ./prisma/seed.ts"
   },
   "scripts": {
     "build": "nuxt build",
