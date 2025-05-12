@@ -15,3 +15,9 @@ export type TradesAggregateModel = {
   avgPrice: number;
   timestamp: Date;
 };
+
+export type SymbolModel = {
+  Id: string;
+  Stable: string;
+  Code: string;
+};
