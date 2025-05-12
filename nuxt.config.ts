@@ -1,6 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: ['@nuxt/eslint', '@prisma/nuxt'],
+  build: {
+    transpile: ['@prisma/client']
+  },
+  alias: {
+    '.prisma/client/index-browser': '@prisma/client'
+  },
   devtools: { enabled: true },
   app: {
     head: {
