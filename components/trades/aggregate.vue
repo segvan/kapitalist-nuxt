@@ -3,15 +3,16 @@ import type {TradesDataModel} from "~/components/trades/TradesDataModel";
 import type {AssetPriceModel, TradesAggregateModel} from "~/lib/apiModels";
 import TradesSummary from "~/components/trades/trades-summary.vue";
 
-const {data: tradesData} = await useFetch('/api/trades-aggregates', {
-  lazy: true,
-  headers: useRequestHeaders(['cookie']),
-});
+const {data: tradesData, status: TradesStatus, error: tradesError} =
+    await useApi<TradesAggregateModel[]>('/api/trades-aggregates');
 
-const {data: prices} = await useFetch('/api/asset-prices', {
-  lazy: true,
-  headers: useRequestHeaders(['cookie']),
-});
+const {data: prices, status: pricesStatus, error: pricesError} =
+    await useApi<AssetPriceModel[]>('/api/asset-prices');
+
+if (tradesError.value?.statusCode === 401
+    || pricesError.value?.status === 401) {
+  navigateTo('/login');
+}
 
 const data = await LoadData(tradesData.value as TradesAggregateModel[] | null, prices.value as AssetPriceModel[] | null);
 

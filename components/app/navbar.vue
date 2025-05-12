@@ -19,7 +19,7 @@ const closeNavbar = () => {
 };
 
 const logout = async () => {
-  await useFetch('/api/logout', {method: 'Post', lazy: true})
+  await useFetch('/api/logout', {method: 'Post' })
   clearUserSession();
   closeNavbar();
 }

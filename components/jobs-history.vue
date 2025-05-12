@@ -1,9 +1,13 @@
 <script setup lang="ts">
 
-const {data: jobs} = await useFetch('/api/jobs', {
-  lazy: true,
-  headers: useRequestHeaders(['cookie']),
-});
+import {useApi} from "~/composables/useApi";
+import type {JobsModel} from "~/lib/apiModels";
+
+const {data: jobs, status, error} = await useApi<JobsModel[]>('/api/jobs');
+
+if (error.value?.statusCode === 401) {
+  navigateTo('/login');
+}
 
 function parseDate(date: Date | string): string {
   date = new Date(date);
@@ -23,7 +27,13 @@ function addTrailingZero(num: number): string | number {
 </script>
 
 <template>
-  <table class="table is-narrow is-hoverable">
+  <div v-if="status==='pending'" class="jobs-table-skeleton skeleton-lines">
+    <div/>
+    <div/>
+    <div/>
+    <div/>
+  </div>
+  <table v-else class="table is-narrow is-hoverable">
     <tbody>
     <tr v-for="job in jobs" :key="job.id">
       <td>{{ job.name }}:</td>
@@ -32,3 +42,9 @@ function addTrailingZero(num: number): string | number {
     </tbody>
   </table>
 </template>
+
+<style scoped>
+.jobs-table-skeleton {
+  width: 30%
+}
+</style>
