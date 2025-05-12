@@ -2,6 +2,14 @@
 export default defineNuxtConfig({
   modules: ['@nuxt/eslint', '@prisma/nuxt'],
   devtools: { enabled: true },
+  vite: {
+    resolve: {
+      alias: {
+        ".prisma/client/index-browser":
+          "./node_modules/.prisma/client/index-browser.js",
+      },
+    },
+  },
   app: {
     head: {
       title: 'Kapitalist',
