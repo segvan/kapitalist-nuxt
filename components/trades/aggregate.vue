@@ -52,17 +52,21 @@ async function LoadData(tradesData: TradesAggregateModel[] | null, prices: Asset
   <div class="columns is-desktop is-multiline">
     <div class="column is-10 is-offset-1 block">
       <p class="subtitle">Summary</p>
-      <app-skeleton-lines
+      <app-external-data-loader
           :condition="tradesStatus==='pending' || pricesStatus==='pending'" :number-of-lines="4"
-          :lines-width="30">
+          :lines-width="30"
+          :error-message="tradesError?.data?.message || pricesError?.data?.message">
         <TradesSummary :invested="invested" :current-val="currentVal"/>
-      </app-skeleton-lines>
+      </app-external-data-loader>
     </div>
     <div class="column is-10 is-offset-1 block">
       <p class="subtitle">Details</p>
-      <app-skeleton-lines :condition="tradesStatus==='pending' || pricesStatus==='pending'" :number-of-lines="6">
+      <app-external-data-loader
+          :condition="tradesStatus==='pending' || pricesStatus==='pending'"
+          :number-of-lines="6"
+          :error-message="tradesError?.data?.message || pricesError?.data?.message">
         <trades-details :invested="invested" :data="data"/>
-      </app-skeleton-lines>
+      </app-external-data-loader>
     </div>
   </div>
 </template>

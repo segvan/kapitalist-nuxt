@@ -27,7 +27,7 @@ function addTrailingZero(num: number): string | number {
 </script>
 
 <template>
-  <app-skeleton-lines :condition="status==='pending'" :number-of-lines="4" :lines-width="30">
+  <app-external-data-loader :condition="status==='pending'" :number-of-lines="4" :lines-width="30" :error-message="error?.data?.message">
     <table class="table is-narrow is-hoverable">
       <tbody>
       <tr v-for="job in jobs" :key="job.id">
@@ -36,5 +36,5 @@ function addTrailingZero(num: number): string | number {
       </tr>
       </tbody>
     </table>
-  </app-skeleton-lines>
+  </app-external-data-loader>
 </template>

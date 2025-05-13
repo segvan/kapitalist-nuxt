@@ -19,7 +19,7 @@ if (error.value?.statusCode === 401) {
         <AddAsset v-else/>
       </div>
     </div>
-    <app-skeleton-lines :condition="status==='pending'" :number-of-lines="3">
+    <app-external-data-loader :condition="status==='pending'" :number-of-lines="3" :error-message="error?.data?.message">
       <div class="tags are-large">
         <div
             v-for="asset in assets"
@@ -30,6 +30,6 @@ if (error.value?.statusCode === 401) {
           <DeleteAsset :asset-id="asset.id"/>
         </div>
       </div>
-    </app-skeleton-lines>
+    </app-external-data-loader>
   </div>
 </template>

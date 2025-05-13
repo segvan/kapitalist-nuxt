@@ -3,6 +3,7 @@ interface Props {
   condition: boolean;
   numberOfLines: number;
   linesWidth?: number;
+  errorMessage?: string;
 }
 
 const props = defineProps<Props>();
@@ -14,6 +15,9 @@ const props = defineProps<Props>();
       :style="{ width: (props.linesWidth ?? 100) + '%' }"
       class="skeleton-lines">
     <div v-for="(_, index) in Array.from({ length: props.numberOfLines })" :key="index"/>
+  </div>
+  <div v-else-if="!!props.errorMessage" class="notification is-danger is-light">
+    {{ props.errorMessage}}
   </div>
   <slot v-else />
 </template>
