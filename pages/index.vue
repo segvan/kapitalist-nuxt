@@ -7,7 +7,7 @@ definePageMeta({
 </script>
 
 <template>
-  <section class="section px-2 pb-6">
+  <section class="section px-2 pb-6 is-fullheight-100vh">
     <div class="container">
       <Aggregate />
     </div>

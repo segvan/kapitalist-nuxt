@@ -5,7 +5,7 @@ import type {AssetModel} from "~/lib/apiModels";
 
 const {data: assets, status, error} = await useApi<AssetModel[]>('/api/assets');
 
-if (error?.value?.status === 401) {
+if (error.value?.statusCode === 401) {
   navigateTo('/login');
 }
 
@@ -16,18 +16,20 @@ if (error?.value?.status === 401) {
     <div class="columns is-mobile">
       <div class="column is-1 is-offset-7-mobile is-offset-9-desktop">
         <button v-if="status==='pending'" class="button skeleton-block">Add asset</button>
-        <AddAsset v-else />
+        <AddAsset v-else/>
       </div>
     </div>
-    <div :class="status==='pending' ? 'skeleton-block' : 'tags are-large'">
-      <div
-          v-for="asset in assets"
-          :key="asset.id"
-          class="tag is-primary is-light"
-      >
-        <h1 class="is-size-4 is-size-3-desktop has-text-weight-medium">{{ asset.id }}</h1>
-        <DeleteAsset :asset-id="asset.id"/>
+    <app-skeleton-lines :condition="status==='pending'" :number-of-lines="3">
+      <div class="tags are-large">
+        <div
+            v-for="asset in assets"
+            :key="asset.id"
+            class="tag is-primary is-light"
+        >
+          <h1 class="is-size-4 is-size-3-desktop has-text-weight-medium">{{ asset.id }}</h1>
+          <DeleteAsset :asset-id="asset.id"/>
+        </div>
       </div>
-    </div>
+    </app-skeleton-lines>
   </div>
 </template>

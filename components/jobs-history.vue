@@ -27,24 +27,14 @@ function addTrailingZero(num: number): string | number {
 </script>
 
 <template>
-  <div v-if="status==='pending'" class="jobs-table-skeleton skeleton-lines">
-    <div/>
-    <div/>
-    <div/>
-    <div/>
-  </div>
-  <table v-else class="table is-narrow is-hoverable">
-    <tbody>
-    <tr v-for="job in jobs" :key="job.id">
-      <td>{{ job.name }}:</td>
-      <td>{{ parseDate(job.timestamp) }}</td>
-    </tr>
-    </tbody>
-  </table>
+  <app-skeleton-lines :condition="status==='pending'" :number-of-lines="4" :lines-width="30">
+    <table class="table is-narrow is-hoverable">
+      <tbody>
+      <tr v-for="job in jobs" :key="job.id">
+        <td>{{ job.name }}:</td>
+        <td>{{ parseDate(job.timestamp) }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </app-skeleton-lines>
 </template>
-
-<style scoped>
-.jobs-table-skeleton {
-  width: 30%
-}
-</style>

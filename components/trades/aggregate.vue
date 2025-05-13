@@ -3,14 +3,14 @@ import type {TradesDataModel} from "~/components/trades/TradesDataModel";
 import type {AssetPriceModel, TradesAggregateModel} from "~/lib/apiModels";
 import TradesSummary from "~/components/trades/trades-summary.vue";
 
-const {data: tradesData, status: TradesStatus, error: tradesError} =
+const {data: tradesData, status: tradesStatus, error: tradesError} =
     await useApi<TradesAggregateModel[]>('/api/trades-aggregates');
 
 const {data: prices, status: pricesStatus, error: pricesError} =
     await useApi<AssetPriceModel[]>('/api/asset-prices');
 
 if (tradesError.value?.statusCode === 401
-    || pricesError.value?.status === 401) {
+    || pricesError.value?.statusCode === 401) {
   navigateTo('/login');
 }
 
@@ -52,11 +52,17 @@ async function LoadData(tradesData: TradesAggregateModel[] | null, prices: Asset
   <div class="columns is-desktop is-multiline">
     <div class="column is-10 is-offset-1 block">
       <p class="subtitle">Summary</p>
-      <TradesSummary :invested="invested" :current-val="currentVal"/>
+      <app-skeleton-lines
+          :condition="tradesStatus==='pending' || pricesStatus==='pending'" :number-of-lines="4"
+          :lines-width="30">
+        <TradesSummary :invested="invested" :current-val="currentVal"/>
+      </app-skeleton-lines>
     </div>
     <div class="column is-10 is-offset-1 block">
       <p class="subtitle">Details</p>
-      <trades-details :invested="invested" :data="data"/>
+      <app-skeleton-lines :condition="tradesStatus==='pending' || pricesStatus==='pending'" :number-of-lines="6">
+        <trades-details :invested="invested" :data="data"/>
+      </app-skeleton-lines>
     </div>
   </div>
 </template>
