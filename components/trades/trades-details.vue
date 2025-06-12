@@ -83,7 +83,7 @@ function toggleVisibility() {
   </div>
 </template>
 
-<style>
+<style scoped>
 @media screen and (max-width: 768px) {
   .column-visible {
     visibility: visible;
