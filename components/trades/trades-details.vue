@@ -82,3 +82,24 @@ function toggleVisibility() {
     </table>
   </div>
 </template>
+
+<style>
+@media screen and (max-width: 768px) {
+  .column-visible {
+    visibility: visible;
+    opacity: 1;
+    transition: all 0.5s ease-in-out;
+  }
+
+  .column-hidden {
+    visibility: collapse;
+    width: 0;
+    opacity: 0;
+    font-size: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    transition: all 0.5s ease-in-out;
+  }
+}
+</style>
