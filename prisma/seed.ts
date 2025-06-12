@@ -25,6 +25,12 @@ async function seedStables() {
   await prisma.stable.create({
     data: {id: 'BUSD', isDefault: false}
   });
+  await prisma.stable.create({
+    data: {id: 'FDUSD', isDefault: false}
+  });
+  await prisma.stable.create({
+    data: {id: 'USDC', isDefault: false}
+  });
 }
 
 async function seedAssets() {
@@ -41,16 +47,10 @@ async function seedAssets() {
     data: {id: 'LINK'}
   });
   await prisma.asset.create({
-    data: {id: 'ADA'}
-  });
-  await prisma.asset.create({
     data: {id: 'UNI'}
   });
   await prisma.asset.create({
     data: {id: 'DOT'}
-  });
-  await prisma.asset.create({
-    data: {id: 'SOL'}
   });
   await prisma.asset.create({
     data: {id: 'BSW'}
@@ -59,7 +59,7 @@ async function seedAssets() {
     data: {id: 'MEME'}
   });
   await prisma.asset.create({
-    data: {id: 'MATIC'}
+    data: {id: 'POL'}
   });
   await prisma.asset.create({
     data: {id: 'ATOM'}

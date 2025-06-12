@@ -14,14 +14,23 @@ if (tradesError.value?.statusCode === 401
   navigateTo('/login');
 }
 
-const data = await LoadData(tradesData.value as TradesAggregateModel[] | null, prices.value as AssetPriceModel[] | null);
+const data = ref<TradesDataModel[]>([]); // make data reactive
+const invested = ref(0);
+const currentVal = ref(0);
 
-let invested = 0;
-let currentVal = 0;
-for (const item of data) {
-  invested += item.QuoteQty;
-  currentVal += item.CurrentTotalAmount;
-}
+watchEffect(async () => {
+  if (tradesData.value && prices.value) {
+    data.value = await LoadData(tradesData.value, prices.value);
+
+    // Recalculate invested and currentVal
+    invested.value = 0;
+    currentVal.value = 0;
+    for (const item of data.value) {
+      invested.value += item.QuoteQty;
+      currentVal.value += item.CurrentTotalAmount;
+    }
+  }
+});
 
 async function LoadData(tradesData: TradesAggregateModel[] | null, prices: AssetPriceModel[] | null): Promise<TradesDataModel[]> {
   return tradesData
