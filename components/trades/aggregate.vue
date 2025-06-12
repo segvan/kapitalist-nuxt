@@ -22,9 +22,6 @@ watchEffect(async () => {
   if (tradesData.value && prices.value) {
     data.value = await LoadData(tradesData.value, prices.value);
 
-    // Recalculate invested and currentVal
-    invested.value = 0;
-    currentVal.value = 0;
     for (const item of data.value) {
       invested.value += item.QuoteQty;
       currentVal.value += item.CurrentTotalAmount;
@@ -32,7 +29,7 @@ watchEffect(async () => {
   }
 });
 
-async function LoadData(tradesData: TradesAggregateModel[] | null, prices: AssetPriceModel[] | null): Promise<TradesDataModel[]> {
+async function LoadData(tradesData: TradesAggregateModel[], prices: AssetPriceModel[]): Promise<TradesDataModel[]> {
   return tradesData
       ? tradesData.map((trade: TradesAggregateModel) => {
         const currentPrice = prices?.find((price: AssetPriceModel) => price.id === trade.symbol)?.price || 0;
