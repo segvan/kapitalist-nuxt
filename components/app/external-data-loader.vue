@@ -14,7 +14,7 @@ const props = defineProps<Props>();
       v-if="props.condition"
       :style="{ width: (props.linesWidth ?? 100) + '%' }"
       class="skeleton-lines">
-    <div v-for="(_, index) in Array.from({ length: props.numberOfLines })" :key="index"/>
+    <div v-for="(index) in props.numberOfLines" :key="index"/>
   </div>
   <div v-else-if="!!props.errorMessage" class="notification is-danger is-light">
     {{ props.errorMessage}}
