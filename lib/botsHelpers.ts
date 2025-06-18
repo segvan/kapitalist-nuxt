@@ -1,7 +1,6 @@
 import fs from "fs";
 import util from "util";
 import * as telegramClient from "./clients/telegramClient";
-import type {Decimal} from "@prisma/client/runtime/library";
 
 const round = (value: string): number => parseFloat(parseFloat(value).toFixed(5));
 
@@ -52,6 +51,10 @@ async function runInBatches<T>(collection: T[], callback: (arg: T) => Promise<vo
 
     await Promise.all(tasks);
   }
+}
+
+interface Decimal {
+  toNumber(): number;
 }
 
 export {printError, round, roundDecimal, roundNumber, runInBatches};
