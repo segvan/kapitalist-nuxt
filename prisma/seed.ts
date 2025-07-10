@@ -20,7 +20,7 @@ main()
 
 async function seedStables() {
   await prisma.stable.create({
-    data: {id: 'USDT', isDefault: true}
+    data: {id: 'USDT', isDefault: false}
   });
   await prisma.stable.create({
     data: {id: 'BUSD', isDefault: false}
@@ -29,7 +29,7 @@ async function seedStables() {
     data: {id: 'FDUSD', isDefault: false}
   });
   await prisma.stable.create({
-    data: {id: 'USDC', isDefault: false}
+    data: {id: 'USDC', isDefault: true}
   });
 }
 
@@ -53,13 +53,13 @@ async function seedAssets() {
     data: {id: 'DOT'}
   });
   await prisma.asset.create({
-    data: {id: 'BSW'}
-  });
-  await prisma.asset.create({
     data: {id: 'MEME'}
   });
   await prisma.asset.create({
     data: {id: 'POL'}
+  });
+  await prisma.asset.create({
+    data: {id: 'MATIC'}
   });
   await prisma.asset.create({
     data: {id: 'ATOM'}
