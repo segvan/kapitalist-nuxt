@@ -30,10 +30,9 @@ const getTickers = async (symbols: SymbolModel[]): Promise<Ticker[]> => {
     });
 };
 
-const sendNotificationIfNeeded = async (ticker: Ticker): Promise<void> => {
+const sendNotificationIfNeeded = async (ticker: Ticker, priceNotifications: PriceNotification[]): Promise<void> => {
   const now = new Date();
-  const priceNotification = await prisma.priceNotifications.findFirst(
-    {where: {id: ticker.Symbol}});
+  const priceNotification = priceNotifications.find(x => x.id == ticker.Symbol);
 
   let nextNotification = priceNotification ? priceNotification.timestamp : ticker.CloseTime;
 
@@ -54,12 +53,18 @@ const sendNotificationIfNeeded = async (ticker: Ticker): Promise<void> => {
 async function bot(): Promise<void> {
   const symbols = await getSymbols();
   const tickers = await getTickers(symbols);
+  const priceNotifications = await prisma.priceNotifications.findMany();
 
-  const tasks = tickers.map((ticker) => sendNotificationIfNeeded(ticker));
+  const tasks = tickers.map((ticker) => sendNotificationIfNeeded(ticker, priceNotifications));
   await Promise.all(tasks);
 
   await saveJobRunTime("PriceChangeBot");
 }
+
+export type PriceNotification = {
+  id: string;
+  timestamp: Date
+};
 
 export type Ticker = {
   Symbol: string;

@@ -9,12 +9,4 @@ const saveJobRunTime = async (jobId: string): Promise<void> => {
     });
 };
 
-const getJobRunTime = async (jobId: string): Promise<Date | undefined> => {
-  const job = await prisma.jobsHistory.findFirst({
-    where: {id: jobId}
-  });
-
-  return job?.timestamp;
-}
-
-export {saveJobRunTime, getJobRunTime};
+export {saveJobRunTime};
