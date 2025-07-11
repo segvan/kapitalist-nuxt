@@ -51,7 +51,6 @@ const sendNotificationIfNeeded = async (ticker: Ticker, priceNotifications: Pric
 };
 
 async function bot(): Promise<void> {
-  throw new Error("Not implemented");
   const symbols = await getSymbols();
   const tickers = await getTickers(symbols);
   const priceNotifications = await prisma.priceNotifications.findMany();
