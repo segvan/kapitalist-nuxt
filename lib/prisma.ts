@@ -1,8 +1,23 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-  return new PrismaClient()
+  // enable logging of all queries (as events) + standard info/warn/error
+  const prisma = new PrismaClient({
+    log: [
+      { level: 'query', emit: 'event' },
+      { level: 'info',  emit: 'stdout' },
+      { level: 'warn',  emit: 'stdout' },
+      { level: 'error', emit: 'stdout' },
+    ],
+  })
+
+  prisma.$on('query', (e) => {
+    console.log(`💾 [Prisma] Query: ${e.query}`)
+  })
+
+  return prisma
 }
+
 
 declare const globalThis: {
   prismaGlobal: ReturnType<typeof prismaClientSingleton>;
