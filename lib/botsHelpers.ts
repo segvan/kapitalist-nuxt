@@ -1,5 +1,3 @@
-import fs from "fs";
-import util from "util";
 import * as telegramClient from "./clients/telegramClient";
 
 const round = (value: string): number => parseFloat(parseFloat(value).toFixed(5));
@@ -7,31 +5,6 @@ const round = (value: string): number => parseFloat(parseFloat(value).toFixed(5)
 const roundDecimal = (value: Decimal | null): number => parseFloat(value?.toNumber().toFixed(5) ?? "0");
 
 const roundNumber = (value: number): number => parseFloat(value.toFixed(5));
-
-console.log = function (d): void {
-  const timestamp = new Date().toISOString();
-  const message = `${timestamp}: ${util.format(d)}\n`;
-
-  process.stdout.write(message);
-
-  const filePath = "./app.log";
-  const maxFileSize = 1024 * 1024 * 10; // 10 MB
-
-  let currentSize = 0;
-  if (fs.existsSync(filePath)) {
-    const stats = fs.statSync(filePath);
-    currentSize = stats.size;
-  }
-
-  let log_file;
-  if (currentSize > maxFileSize) {
-    log_file = fs.createWriteStream(filePath, {flags: "w"});
-  } else {
-    log_file = fs.createWriteStream(filePath, {flags: "a"});
-  }
-
-  log_file.write(message);
-};
 
 const printError = async (message: string, exception: unknown): Promise<void> => {
   const errorMessage = `${message}: ${exception}`;
