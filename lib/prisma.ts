@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-  // enable logging of all queries (as events) + standard info/warn/error
   const prisma = new PrismaClient({
     log: [
       { level: 'query', emit: 'event' },

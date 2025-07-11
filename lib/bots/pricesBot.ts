@@ -1,4 +1,4 @@
-import {printError, round} from "../botsHelpers"
+import {printError, round, runInBatches} from "../botsHelpers"
 import {saveJobRunTime} from "../jobsHistoryRepository";
 import {binanceClient} from "../clients/binanceClient";
 import type {RestMarketTypes} from "@binance/connector-typescript";
@@ -21,14 +21,15 @@ const getPrices = async (symbols: SymbolModel[]): Promise<Price[]> => {
 
 const savePrices = async (prices: Price[]): Promise<void> => {
   const now = new Date();
-  const tasks = prices.map(x =>
-    prisma.assetPrices.upsert({
+  const savePrice = async (x: Price) => {
+    await prisma.assetPrices.upsert({
       where: {id: x.Symbol},
       update: {price: x.Price, timestamp: now},
       create: {id: x.Symbol, price: x.Price, timestamp: now}
-    }));
+    })
+  };
 
-  await Promise.all(tasks);
+  await runInBatches<Price>(prices, savePrice);
 
   await prisma.assetPrices.deleteMany({
     where: {

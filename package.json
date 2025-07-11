@@ -14,7 +14,7 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "vercel": "nuxt generate --no-engine && npm run build"
+    "vercel": "nuxt generate --no-engine && nuxt build"
   },
   "dependencies": {
     "@binance/connector-typescript": "^0.3.16",

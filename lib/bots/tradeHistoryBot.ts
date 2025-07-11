@@ -6,8 +6,6 @@ import * as telegramClient from "../clients/telegramClient";
 import prisma from "~/lib/prisma";
 import type {SymbolModel} from "~/lib/apiModels";
 
-const cleanAggrHistoryMinutes = 10;
-
 const getBeginDates = async (): Promise<Record<string, Date>> => {
   const dates = await prisma.trades.groupBy(
     {
@@ -90,10 +88,17 @@ const sendTradesDetails = async (newHistory: Trade[]) => {
   }
 };
 
-const saveHistoryAggr = async (): Promise<void> => {
+const saveHistoryAggr = async (newHistory: Trade[]): Promise<void> => {
+  const uniqueSymbols = [...new Set(newHistory.map(x => x.Symbol))]
+
+  if (uniqueSymbols.length === 0) {
+    return;
+  }
+
   const tradesAggr = (await prisma.trades.groupBy(
     {
       by: ["symbol"],
+      where: { symbol: { in: uniqueSymbols } },
       _sum: {qty: true, quoteQty: true},
     }
   )).map((t) => {
@@ -125,12 +130,6 @@ const saveHistoryAggr = async (): Promise<void> => {
   };
 
   await runInBatches<TradeAggr>(tradesAggr, saveTradeAggr);
-
-  await prisma.tradesAggr.deleteMany({
-    where: {
-      timestamp: {lt: new Date(Date.now() - 1000 * 60 * cleanAggrHistoryMinutes)}
-    }
-  });
 };
 
 type Trade = {
@@ -158,7 +157,7 @@ async function bot(): Promise<void> {
   if (newHistory.length > 0) {
     await saveNewTrades(newHistory);
 
-    await saveHistoryAggr();
+    await saveHistoryAggr(newHistory);
 
     await telegramClient.sendMessage(`Registered ${newHistory.length} new trades.`);
     setTimeout(async () => {

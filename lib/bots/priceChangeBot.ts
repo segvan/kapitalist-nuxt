@@ -1,4 +1,4 @@
-import {printError, round} from "../botsHelpers"
+import {printError, round, runInBatches} from "../botsHelpers"
 import {saveJobRunTime} from "../jobsHistoryRepository";
 import {binanceClient} from "../clients/binanceClient";
 import type {RestMarketTypes} from "@binance/connector-typescript";
@@ -55,8 +55,11 @@ async function bot(): Promise<void> {
   const tickers = await getTickers(symbols);
   const priceNotifications = await prisma.priceNotifications.findMany();
 
-  const tasks = tickers.map((ticker) => sendNotificationIfNeeded(ticker, priceNotifications));
-  await Promise.all(tasks);
+  const sendNotifications = async (ticker: Ticker) => {
+    await sendNotificationIfNeeded(ticker, priceNotifications);
+  };
+
+  await runInBatches<Ticker>(tickers, sendNotifications);
 
   await saveJobRunTime("PriceChangeBot");
 }
