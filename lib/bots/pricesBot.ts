@@ -52,14 +52,9 @@ const bot = async (): Promise<void> => {
 }
 
 const run = async () => {
-  console.log('--- prices bot started ---');
   await bot().catch(async (e) => {
     await printError("Prices Bot Exception", e);
   });
 };
 
 export {run};
-
-// bot().catch(async (e) => {
-//   await printError("Prices Bot Exception", e);
-// });
