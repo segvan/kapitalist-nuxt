@@ -170,6 +170,7 @@ async function bot(): Promise<void> {
 }
 
 const run = async () => {
+  console.log('--- trade history bot started ---');
   await bot().catch(async (e) => {
     await printError("Trade History Bot Exception", e);
   });

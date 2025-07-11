@@ -74,6 +74,7 @@ export type Ticker = {
 };
 
 const run = async () => {
+  console.log('--- price change bot started ---');
   await bot().catch(async (e) => {
     await printError("Prices Change Bot Exception", e);
   });

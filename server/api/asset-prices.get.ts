@@ -4,7 +4,7 @@ import protectRoute from "~/server/protectRoute";
 
 export default defineEventHandler(async (event) => {
   await protectRoute(event);
-
+  console.log('--- get prices');
   const prices = await prisma.assetPrices.findMany();
   return prices.map(price => {
     return {
