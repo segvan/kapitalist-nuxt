@@ -17,7 +17,7 @@ async function runInBatches<T>(collection: T[], callback: (arg: T) => Promise<vo
   const collectionCopy = collection.slice();
   while (collectionCopy.length) {
     const tasks = collectionCopy
-      .splice(0, 10)
+      .splice(0, 16)
       .map(async (entry) => {
         await callback(entry)
       });
