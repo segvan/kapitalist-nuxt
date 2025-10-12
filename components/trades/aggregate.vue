@@ -34,7 +34,7 @@ async function LoadData(tradesData: TradesAggregateModel[], prices: AssetPriceMo
       ? tradesData.map((trade: TradesAggregateModel) => {
         const currentPrice = prices?.find((price: AssetPriceModel) => price.id === trade.symbol)?.price || 0;
         const currentTotalAmount = currentPrice * trade.qty;
-        const totalDifference = trade.quoteQty !== 0
+        const totalDifference = trade.quoteQty > 0
             ? ((currentTotalAmount - trade.quoteQty) / trade.quoteQty) * 100
             : 0;
         const totalEarnings = currentTotalAmount - trade.quoteQty;

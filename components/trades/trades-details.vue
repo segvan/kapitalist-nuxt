@@ -41,11 +41,11 @@ function toggleVisibility() {
       <tr v-for="trade in props.data" :key="trade.Symbol">
         <td>{{ trade.Symbol }}</td>
         <td :class="columnToggle">
-          {{ ((trade.QuoteQty / props.invested) * 100).toFixed(2) }}
+          {{ props.invested > 0 ? ((trade.QuoteQty / props.invested) * 100).toFixed(2) : 0 }}
         </td>
         <td :class="columnToggle">{{ trade.QuoteQty.toFixed(2) }}</td>
         <td :class="columnToggle">{{ trade.CurrentPrice.toFixed(2) }}</td>
-        <td :class="columnToggle">{{ trade.AvgPrice.toFixed(2) }}</td>
+        <td :class="columnToggle">{{ trade.AvgPrice > 0 ? trade.AvgPrice.toFixed(2) : 0 }}</td>
         <td :class="columnToggle">{{ trade.Qty }}</td>
         <td
             :class="[
