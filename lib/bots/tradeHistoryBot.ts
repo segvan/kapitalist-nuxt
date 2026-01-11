@@ -25,6 +25,7 @@ const getMyTrades = async (beginDates: Record<string, Date>, symbols: SymbolMode
       const trades = await binanceClient.accountTradeList(asset.Code, {
         startTime: startTime,
         limit: 1000,
+        recvWindow: 50000,
       });
       return {asset: asset.Id, assetTrades: trades};
     } catch (e: unknown) {
