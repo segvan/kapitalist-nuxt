@@ -4,13 +4,14 @@ import {computed} from 'vue';
 interface Props {
   invested: number;
   currentVal: number;
+  realizedGains: number;
 }
 
 const props = defineProps<Props>();
 
-const earnings = computed(() => props.currentVal - props.invested);
+const earnings = computed(() => props.currentVal + props.realizedGains - props.invested);
 const difference = computed(() => props.invested > 0
-    ? ((props.currentVal - props.invested) / props.invested) * 100
+    ? (earnings.value / props.invested) * 100
     : 0);
 </script>
 
@@ -32,7 +33,7 @@ const difference = computed(() => props.invested > 0
       <td
           :class="[
             'has-text-white',
-            currentVal >= invested
+            earnings >= 0
               ? 'has-background-success'
               : 'has-background-danger'
           ]"

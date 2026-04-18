@@ -38,19 +38,35 @@ function toggleVisibility() {
       </tr>
       </thead>
       <tbody>
-      <tr v-for="trade in props.data" :key="trade.Symbol">
+      <tr
+          v-for="trade in props.data"
+          :key="trade.Symbol"
+          :class="trade.IsRecouped ? 'has-background-success-light' : ''"
+      >
         <td>{{ trade.Symbol }}</td>
         <td :class="columnToggle">
-          {{ props.invested > 0 ? ((trade.QuoteQty / props.invested) * 100).toFixed(2) : 0 }}
+          {{ props.invested > 0 ? ((trade.EffectiveCostBasis / props.invested) * 100).toFixed(2) : '—' }}
         </td>
-        <td :class="columnToggle">{{ trade.QuoteQty.toFixed(2) }}</td>
+        <td :class="columnToggle">{{ trade.EffectiveCostBasis.toFixed(2) }}</td>
         <td :class="columnToggle">{{ trade.CurrentPrice.toFixed(2) }}</td>
-        <td :class="columnToggle">{{ trade.AvgPrice > 0 ? trade.AvgPrice.toFixed(2) : 0 }}</td>
+        <td
+            :class="[
+              columnToggle,
+              trade.Qty > 0 ? 'has-text-white' : '',
+              trade.Qty > 0
+                ? trade.CurrentPrice >= trade.AvgPrice
+                  ? 'has-background-success'
+                  : 'has-background-danger'
+                : ''
+            ]"
+        >
+          {{ trade.IsRecouped ? '0.00' : trade.AvgPrice > 0 ? trade.AvgPrice.toFixed(2) : '—' }}
+        </td>
         <td :class="columnToggle">{{ trade.Qty }}</td>
         <td
             :class="[
               'has-text-white',
-              trade.CurrentTotalAmount >= trade.QuoteQty
+              trade.CurrentTotalAmount >= trade.EffectiveCostBasis
                 ? 'has-background-success'
                 : 'has-background-danger'
             ]"
@@ -75,7 +91,7 @@ function toggleVisibility() {
                 : 'has-background-danger'
             ]"
         >
-          {{ trade.TotalDifference.toFixed(2) }} %
+          {{ trade.IsRecouped ? '♾' : trade.TotalDifference.toFixed(2) + ' %' }}
         </td>
       </tr>
       </tbody>
