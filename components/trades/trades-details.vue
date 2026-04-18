@@ -41,7 +41,6 @@ function toggleVisibility() {
       <tr
           v-for="trade in props.data"
           :key="trade.Symbol"
-          :class="trade.IsRecouped ? 'has-background-success-light' : ''"
       >
         <td>{{ trade.Symbol }}</td>
         <td :class="columnToggle">
