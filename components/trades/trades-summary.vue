@@ -8,6 +8,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const unrealizedProfit = computed(() => props.currentVal - props.invested);
 const total = computed(() => props.currentVal + props.realizedProfit);
 const difference = computed(() => props.invested > 0
     ? ((total.value - props.invested) / props.invested) * 100
@@ -20,6 +21,7 @@ const difference = computed(() => props.invested > 0
     <tr>
       <th scope="col">Invested</th>
       <th scope="col">Current Value</th>
+      <th scope="col">Unrealized Profit</th>
       <th scope="col">Realized Profit</th>
       <th scope="col">Total Value</th>
       <th scope="col">Difference</th>
@@ -40,6 +42,16 @@ const difference = computed(() => props.invested > 0
           ]"
       >
         {{ props.currentVal.toFixed(2) }}
+      </td>
+      <!--Unrealized Profit-->
+      <td
+          :class="['has-text-white',
+            unrealizedProfit >= 0
+              ? 'has-background-success'
+              : 'has-background-danger'
+          ]"
+      >
+        {{ unrealizedProfit.toFixed(2) }}
       </td>
       <!--Realized Profit-->
       <td
