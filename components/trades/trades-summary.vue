@@ -4,12 +4,13 @@ import {computed} from 'vue';
 interface Props {
   invested: number;
   currentVal: number;
-  earnings: number;
+  realizedProfit: number;
 }
 
 const props = defineProps<Props>();
+const total = computed(() => props.currentVal + props.realizedProfit);
 const difference = computed(() => props.invested > 0
-    ? (props.earnings / props.invested) * 100
+    ? ((total.value - props.invested) / props.invested) * 100
     : 0);
 </script>
 
@@ -18,8 +19,8 @@ const difference = computed(() => props.invested > 0
     <thead>
     <tr>
       <th scope="col">Invested</th>
-      <th scope="col">Current Value</th>
       <th scope="col">Earnings</th>
+      <th scope="col">Total Value</th>
       <th scope="col">Difference</th>
     </tr>
     </thead>
@@ -27,32 +28,32 @@ const difference = computed(() => props.invested > 0
     <tr>
       <!--Invested-->
       <td class="has-background-success has-text-white">
-        {{ invested.toFixed(2) }}
-      </td>
-      <!--Current Value-->
-      <td
-          :class="['has-text-white',
-            earnings >= 0
-              ? 'has-background-success'
-              : 'has-background-danger'
-          ]"
-      >
-        {{ currentVal.toFixed(2) }}
+        {{ props.invested.toFixed(2) }}
       </td>
       <!--Earnings-->
       <td
           :class="['has-text-white',
-            earnings >= 0
+            props.realizedProfit >= 0
               ? 'has-background-success'
               : 'has-background-danger'
           ]"
       >
-        {{ earnings.toFixed(2) }}
+        {{ props.realizedProfit.toFixed(2) }}
+      </td>
+      <!--Total Value-->
+      <td
+          :class="['has-text-white',
+            total >= props.invested
+              ? 'has-background-success'
+              : 'has-background-danger'
+          ]"
+      >
+        {{ total.toFixed(2) }}
       </td>
       <!--Difference-->
       <td
           :class="['has-text-white',
-            earnings >= 0
+            difference >= 0
               ? 'has-background-success'
               : 'has-background-danger'
           ]"

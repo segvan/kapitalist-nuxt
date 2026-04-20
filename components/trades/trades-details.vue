@@ -13,6 +13,8 @@ const visible = ref(false);
 
 const columnToggle = computed(() => (visible.value ? 'column-visible' : 'column-hidden'));
 
+const totalEarnings = (trade: TradesDataModel) => trade.UnrealizedProfit + trade.RealizedProfit;
+
 function toggleVisibility() {
   visible.value = !visible.value;
 }
@@ -76,12 +78,12 @@ function toggleVisibility() {
         <!--Earnings-->
         <td
             :class="['has-text-white',
-              trade.Earnings >= 0
+              totalEarnings(trade) >= 0
                 ? 'has-background-success'
                 : 'has-background-danger'
             ]"
         >
-          {{ trade.Earnings.toFixed(2) }}
+          {{ totalEarnings(trade).toFixed(2) }}
         </td>
         <!--Difference-->
         <td

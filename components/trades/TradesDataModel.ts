@@ -5,7 +5,8 @@ export type TradesDataModel = {
   AvgPrice: number;
   CurrentPrice: number;
   CurrentValue: number;
-  Earnings: number;
+  UnrealizedProfit: number;
+  RealizedProfit: number;
   Difference: number;
   IsRecouped: boolean;
 };
