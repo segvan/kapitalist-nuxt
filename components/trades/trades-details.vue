@@ -28,10 +28,10 @@ function toggleVisibility() {
       <tr>
         <th scope="col">Currency</th>
         <th :class="columnToggle" scope="col">%</th>
+        <th :class="columnToggle" scope="col">Amount</th>
         <th :class="columnToggle" scope="col">Invested</th>
         <th :class="columnToggle" scope="col">Current Price</th>
         <th :class="columnToggle" scope="col">Average Price</th>
-        <th :class="columnToggle" scope="col">Amount</th>
         <th scope="col">Current Value</th>
         <th scope="col">Earnings</th>
         <th scope="col">Difference</th>
@@ -45,6 +45,8 @@ function toggleVisibility() {
         <td :class="columnToggle">
           {{ props.invested > 0 ? ((trade.Invested / props.invested) * 100).toFixed(2) : '-' }}
         </td>
+        <!--Amount-->
+        <td :class="columnToggle">{{ trade.Qty }}</td>
         <!--Invested-->
         <td :class="columnToggle">{{ trade.Invested.toFixed(2) }}</td>
         <!--Current Price-->
@@ -61,8 +63,6 @@ function toggleVisibility() {
         >
           {{ trade.IsRecouped ? '-' : trade.AvgPrice.toFixed(2) }}
         </td>
-        <!--Amount-->
-        <td :class="columnToggle">{{ trade.Qty }}</td>
         <!--Current Value-->
         <td
             :class="['has-text-white',
