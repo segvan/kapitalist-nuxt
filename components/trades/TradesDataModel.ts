@@ -1,13 +1,11 @@
 export type TradesDataModel = {
   Symbol: string;
   Qty: number;
-  QuoteQty: number;
-  EffectiveCostBasis: number;
-  RealizedGain: number;
+  Invested: number;
   AvgPrice: number;
   CurrentPrice: number;
-  CurrentTotalAmount: number;
-  TotalDifference: number;
-  TotalEarnings: number;
+  CurrentValue: number;
+  Earnings: number;
+  Difference: number;
   IsRecouped: boolean;
 };

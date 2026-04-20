@@ -4,14 +4,12 @@ import {computed} from 'vue';
 interface Props {
   invested: number;
   currentVal: number;
-  realizedGains: number;
+  earnings: number;
 }
 
 const props = defineProps<Props>();
-
-const earnings = computed(() => props.currentVal + props.realizedGains - props.invested);
 const difference = computed(() => props.invested > 0
-    ? (earnings.value / props.invested) * 100
+    ? (props.earnings / props.invested) * 100
     : 0);
 </script>
 
@@ -27,12 +25,13 @@ const difference = computed(() => props.invested > 0
     </thead>
     <tbody>
     <tr>
+      <!--Invested-->
       <td class="has-background-success has-text-white">
         {{ invested.toFixed(2) }}
       </td>
+      <!--Current Value-->
       <td
-          :class="[
-            'has-text-white',
+          :class="['has-text-white',
             earnings >= 0
               ? 'has-background-success'
               : 'has-background-danger'
@@ -40,9 +39,9 @@ const difference = computed(() => props.invested > 0
       >
         {{ currentVal.toFixed(2) }}
       </td>
+      <!--Earnings-->
       <td
-          :class="[
-            'has-text-white',
+          :class="['has-text-white',
             earnings >= 0
               ? 'has-background-success'
               : 'has-background-danger'
@@ -50,10 +49,10 @@ const difference = computed(() => props.invested > 0
       >
         {{ earnings.toFixed(2) }}
       </td>
+      <!--Difference-->
       <td
-          :class="[
-            'has-text-white',
-            difference >= 0
+          :class="['has-text-white',
+            earnings >= 0
               ? 'has-background-success'
               : 'has-background-danger'
           ]"
