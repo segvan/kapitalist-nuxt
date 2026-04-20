@@ -19,7 +19,8 @@ const difference = computed(() => props.invested > 0
     <thead>
     <tr>
       <th scope="col">Invested</th>
-      <th scope="col">Earnings</th>
+      <th scope="col">Current Value</th>
+      <th scope="col">Realized Profit</th>
       <th scope="col">Total Value</th>
       <th scope="col">Difference</th>
     </tr>
@@ -30,7 +31,17 @@ const difference = computed(() => props.invested > 0
       <td class="has-background-success has-text-white">
         {{ props.invested.toFixed(2) }}
       </td>
-      <!--Earnings-->
+      <!--Current Value-->
+      <td
+          :class="['has-text-white',
+            props.currentVal >= props.invested
+              ? 'has-background-success'
+              : 'has-background-danger'
+          ]"
+      >
+        {{ props.currentVal.toFixed(2) }}
+      </td>
+      <!--Realized Profit-->
       <td
           :class="['has-text-white',
             props.realizedProfit >= 0
