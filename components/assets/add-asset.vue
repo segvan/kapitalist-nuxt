@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import {ref, computed} from 'vue';
 
+const emit = defineEmits<{(e: 'added'): void}>();
+
 const isDialogOpened = ref(false);
 const assetValue = ref('');
+const isLoading = ref(false);
+const error = ref('');
 
 const isValid = computed(() => !assetValue.value || assetValue.value.length >= 3);
 
@@ -12,13 +16,22 @@ const openModal = () => {
 
 const closeModal = () => {
   assetValue.value = '';
+  error.value = '';
   isDialogOpened.value = false;
 };
 
-function addAsset() {
-  // TODO: Add new asset to the list
-  alert(JSON.stringify({id: assetValue.value}));
-  closeModal();
+async function addAsset() {
+  isLoading.value = true;
+  error.value = '';
+  try {
+    await $fetch('/api/assets', {method: 'POST', body: {id: assetValue.value}});
+    closeModal();
+    emit('added');
+  } catch (e: any) {
+    error.value = e?.data?.message || 'Failed to add asset';
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 
@@ -50,13 +63,15 @@ function addAsset() {
           <div class="buttons">
             <button
                 class="button is-success"
-                :disabled="!isValid || !assetValue"
+                :disabled="!isValid || !assetValue || isLoading"
+                :class="{'is-loading': isLoading}"
                 @click="addAsset"
             >
               Save
             </button>
-            <button class="button" @click="closeModal">Cancel</button>
+            <button class="button" :disabled="isLoading" @click="closeModal">Cancel</button>
           </div>
+          <p v-if="error" class="help is-danger">{{ error }}</p>
         </footer>
       </div>
     </div>

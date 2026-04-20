@@ -3,7 +3,7 @@ import DeleteAsset from "~/components/assets/delete-asset.vue";
 import AddAsset from "~/components/assets/add-asset.vue";
 import type {AssetModel} from "~/lib/apiModels";
 
-const {data: assets, status, error} = await useApi<AssetModel[]>('/api/assets');
+const {data: assets, status, error, refresh} = await useApi<AssetModel[]>('/api/assets');
 
 if (error.value?.statusCode === 401) {
   navigateTo('/login');
@@ -16,7 +16,7 @@ if (error.value?.statusCode === 401) {
     <div class="columns is-mobile">
       <div class="column is-1 is-offset-7-mobile is-offset-9-desktop">
         <button v-if="status==='pending'" class="button skeleton-block">Add asset</button>
-        <AddAsset v-else/>
+        <AddAsset v-else @added="refresh"/>
       </div>
     </div>
     <app-external-data-loader :condition="status==='pending'" :number-of-lines="3" :error-message="error?.data?.message">
@@ -27,7 +27,7 @@ if (error.value?.statusCode === 401) {
             class="tag is-primary is-light"
         >
           <h1 class="is-size-4 is-size-3-desktop has-text-weight-medium">{{ asset.id }}</h1>
-          <DeleteAsset :asset-id="asset.id"/>
+          <DeleteAsset :asset-id="asset.id" @deleted="refresh"/>
         </div>
       </div>
     </app-external-data-loader>

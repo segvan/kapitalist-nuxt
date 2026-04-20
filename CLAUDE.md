@@ -64,12 +64,18 @@ No test suite exists in this project.
 4. Client `middleware/auth.js` redirects to `/login` if no session
 
 ### Background Workers
-Three worker endpoints under `server/api/workers/` are triggered externally (cron, webhook) via `POST` with `x-api-key` header:
-- `/api/workers/prices` — fetches current Binance prices, stores in `AssetPrices`
-- `/api/workers/price-change` — detects threshold crossings, sends Telegram alerts
-- `/api/workers/trade-history` — syncs trade history from Binance into `Trades` / `TradesAggr`
+Three worker endpoints under `server/api/workers/` are triggered externally via cron (HTTP `POST` with `x-api-key` header). Each endpoint invokes the corresponding bot in `lib/bots/`:
+
+| Endpoint | Bot | What it does |
+|---|---|---|
+| `/api/workers/prices` | `lib/bots/pricesBot.ts` | Fetches all tracked symbol prices from Binance, upserts into `AssetPrices`, purges records older than 10 minutes |
+| `/api/workers/price-change` | `lib/bots/priceChangeBot.ts` | Fetches 24h tickers from Binance; sends a Telegram alert if `|priceChangePercent| > 5%` and the last alert for that symbol was more than 24 h ago (throttled via `PriceNotifications`) |
+| `/api/workers/trade-history` | `lib/bots/tradeHistoryBot.ts` | Syncs new trades from Binance since last known timestamp per symbol, saves to `Trades`, recomputes `TradesAggr`, sends Telegram notifications for new trades |
+
+All bots call `saveJobRunTime()` on success to record execution in `JobsHistory`. Errors are caught and forwarded to Telegram via `printError()`.
 
 ### Database Models
+Defined in `prisma/schema.prisma`. Read that file for the authoritative field list.
 - `Asset` — tracked cryptocurrencies (id = symbol, e.g. `BTCUSDT`)
 - `Stable` — stablecoin denominations (one marked `isDefault`)
 - `AssetPrices` — price snapshots over time

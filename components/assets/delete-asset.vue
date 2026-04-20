@@ -1,17 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {ref} from 'vue';
 
 interface DeleteAssetProps {
   assetId: string;
 }
 
 const props = defineProps<DeleteAssetProps>();
-const isDialogOpened = ref(false);
+const emit = defineEmits<{(e: 'deleted'): void}>();
 
-function deleteAsset(assetId: string) {
-  // TODO: Remove asset from the list
-  alert(assetId);
-  isDialogOpened.value = false;
+const isDialogOpened = ref(false);
+const isLoading = ref(false);
+const error = ref('');
+
+async function deleteAsset() {
+  isLoading.value = true;
+  error.value = '';
+  try {
+    await $fetch(`/api/assets/${props.assetId}`, {method: 'DELETE'});
+    isDialogOpened.value = false;
+    emit('deleted');
+  } catch (e: any) {
+    error.value = e?.data?.message || 'Failed to delete asset';
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 
@@ -26,9 +38,15 @@ function deleteAsset(assetId: string) {
       </header>
       <footer class="modal-card-foot">
         <div class="buttons">
-          <button class="button is-danger" @click="deleteAsset(props.assetId)">Delete</button>
-          <button class="button" @click="isDialogOpened = false">Cancel</button>
+          <button
+              class="button is-danger"
+              :disabled="isLoading"
+              :class="{'is-loading': isLoading}"
+              @click="deleteAsset"
+          >Delete</button>
+          <button class="button" :disabled="isLoading" @click="isDialogOpened = false">Cancel</button>
         </div>
+        <p v-if="error" class="help is-danger">{{ error }}</p>
       </footer>
     </div>
   </div>
