@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Kapitalist** is a Nuxt 3 full-stack cryptocurrency portfolio tracker with Binance integration. It tracks asset prices, trade history, and portfolio aggregates. Background workers sync data from Binance and send Telegram alerts.
+**Kapitalist** is a Nuxt 4 full-stack cryptocurrency portfolio tracker with Binance integration. It tracks asset prices, trade history, and portfolio aggregates. Background workers sync data from Binance and send Telegram alerts.
 
 Package manager: **yarn**
 
@@ -13,17 +13,17 @@ Package manager: **yarn**
 ```bash
 yarn dev          # Start dev server
 yarn build        # Production build
-yarn preview      # Preview production build
+yarn preview      # Preview production build locally
 yarn lint         # Run ESLint
 yarn lint:fix     # Auto-fix ESLint issues
 ```
 
 ### Database (Prisma)
 ```bash
-npx prisma migrate dev    # Run pending migrations
-npx prisma generate       # Regenerate Prisma client after schema changes
-npx prisma db seed        # Seed database (uses tsx ./prisma/seed.ts)
-npx prisma studio         # Open Prisma Studio GUI
+yarn db:migrate   # Create + apply a new migration (dev only)
+yarn db:deploy    # Apply existing migrations (production)
+yarn db:seed      # Seed database (uses tsx ./prisma/seed.ts)
+yarn db:studio    # Open Prisma Studio GUI
 ```
 
 No test suite exists in this project.
@@ -31,8 +31,9 @@ No test suite exists in this project.
 ## Architecture
 
 ### Stack
-- **Nuxt 3** with SSR (file-based routing, H3 server, auto-imports)
-- **PostgreSQL** via **Prisma 6** (schema at `prisma/schema.prisma`)
+- **Nuxt 4** with SSR (file-based routing, H3 server, auto-imports)
+- **PostgreSQL** via **Prisma 7** (schema at `prisma/schema.prisma`, config at `prisma.config.ts`)
+- **Prisma adapter**: `@prisma/adapter-pg` for direct PostgreSQL connection
 - **Bulma CSS** for styling
 - **JWT** (`jose`) for auth stored in a `session` cookie
 - **Binance Connector TypeScript SDK** for exchange data
@@ -50,12 +51,13 @@ No test suite exists in this project.
 | `server/protectRoute.ts` | JWT middleware for protected API routes — reads `session` cookie, sets `event.context.userId` |
 | `server/apiKeyProtectRoute.ts` | API key middleware for worker endpoints — requires `x-api-key` header |
 | `lib/` | Business logic (not Nuxt-specific) |
-| `lib/prisma.ts` | Prisma client singleton (dev hot-reload safe) |
+| `lib/prisma.ts` | Prisma client singleton |
 | `lib/auth.ts` | JWT sign/verify helpers |
 | `lib/clients/` | `binanceClient.ts`, `telegramClient.ts` wrappers |
 | `lib/bots/` | Background job logic: `pricesBot`, `priceChangeBot`, `tradeHistoryBot` |
 | `lib/apiModels/` | Shared TypeScript types for API request/response shapes |
 | `prisma/` | Schema, migrations, seed script |
+| `prisma.config.ts` | Prisma 7 config — schema path and database URL for CLI tools |
 
 ### Authentication Flow
 1. `POST /api/login` verifies `USER_NAME`/`USER_PASSWORD` env vars and signs a JWT
@@ -83,6 +85,7 @@ Defined in `prisma/schema.prisma`. Read that file for the authoritative field li
 - `TradesAggr` — per-symbol aggregated trade summary (qty, quoteQty, avgPrice)
 - `JobsHistory` — execution log for worker jobs
 - `PriceNotifications` — tracks when alerts were sent
+- `User` — application users (email + hashed password)
 
 ### Key Environment Variables
 ```
@@ -97,5 +100,13 @@ API_KEY            # Worker endpoint protection key
 ```
 
 ### Deployment
-- **Vercel**: `vercel.json` present; `yarn vercel` runs `nuxt generate --no-engine && nuxt build`
-- **Docker**: `Dockerfile` for the app, `docker-compose.yml` spins up PostgreSQL locally
+Run on any Node.js server:
+```bash
+yarn install && yarn db:deploy && yarn build
+node .output/server/index.mjs
+```
+
+Local PostgreSQL via Docker:
+```bash
+docker-compose -p postgres up -d --build
+```

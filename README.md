@@ -1,37 +1,34 @@
 ## Getting Started
 
-First, run the development server:
-
+**Dev workflow:**
 ```bash
-yarn run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-## Prisma commands:
-
-```bash
-npx prisma generate dev
-npx prisma migrate dev
-npx prisma db seed
+yarn install        # install deps + runs postinstall (nuxt prepare + prisma generate)
+yarn db:migrate     # create + apply a new migration after schema changes
+yarn dev            # start dev server at http://localhost:3000
+yarn db:studio      # open Prisma Studio GUI to inspect/edit data
+yarn db:seed        # seed the database (runs prisma/seed.ts)
+yarn lint:fix       # fix lint issues before committing
 ```
 
-## Docker commands:
-
+**After pulling changes:**
 ```bash
-docker-compose -p postgres up  -d --build
+yarn install        # postinstall → nuxt prepare + prisma generate
+yarn db:migrate     # apply any new migrations
 ```
 
-## Prod prisma env variables:
+**Deploy (Node.js server):**
+```bash
+yarn install        # installs deps + generates Prisma client
+yarn db:deploy      # apply pending migrations (safe for prod, no prompts)
+yarn build          # outputs to .output/
+node .output/server/index.mjs
+```
 
-binaries:
-https://github.com/gek64/prisma-engines-freebsd
+`db:migrate` — dev only, creates migration files interactively  
+`db:deploy` — production only, applies existing migrations silently
+
+## Local database (Docker)
 
 ```bash
-export PRISMA_QUERY_ENGINE_BINARY="/home/sergiisoftware/prisma-engines/query-engine"
-export PRISMA_QUERY_ENGINE_LIBRARY="/home/sergiisoftware/prisma-engines/libquery_engine-freebsd13.so.node"
-export PRISMA_SCHEMA_ENGINE_BINARY="/home/sergiisoftware/prisma-engines/schema-engine"
-export PRISMA_CLI_QUERY_ENGINE_TYPE="library"
-export PRISMA_CLIENT_ENGINE_TYPE="library"
+docker-compose -p postgres up -d --build
 ```
