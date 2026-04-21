@@ -52,6 +52,7 @@ const handleLogin = async (e: Event) => {
               class="input is-medium"
               type="email"
               placeholder="Email"
+              autocomplete="email"
           >
         </div>
       </div>
@@ -63,6 +64,7 @@ const handleLogin = async (e: Event) => {
               class="input is-medium"
               type="password"
               placeholder="Password"
+              autocomplete="current-password"
           >
         </div>
       </div>
