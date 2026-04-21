@@ -93,8 +93,6 @@ BNB_API_KEY        # Binance API key
 BNB_SECRET_KEY     # Binance secret
 TLG_TOKEN_ID       # Telegram bot token
 TLG_CHAT_ID        # Telegram chat ID
-USER_NAME          # App login username
-USER_PASSWORD      # App login password
 API_KEY            # Worker endpoint protection key
 ```
 
