@@ -29,7 +29,7 @@ const logout = async () => {
   <nav v-if="!shouldHideNavbar" class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <img src="/logo192.png" alt="" width="32" height="32">
+        <img src="/icon192.png" alt="" width="32" height="32">
       </div>
       <a
           role="button"
