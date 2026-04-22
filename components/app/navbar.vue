@@ -19,7 +19,7 @@ const closeNavbar = () => {
 };
 
 const logout = async () => {
-  await useFetch('/api/logout', {method: 'Post' })
+  await useFetch('/api/logout', {method: 'Post'})
   clearUserSession();
   closeNavbar();
 }
@@ -29,7 +29,13 @@ const logout = async () => {
   <nav v-if="!shouldHideNavbar" class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <img src="/icon192.png" alt="" width="32" height="32">
+        <svg width="64" height="64" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-label="Kapitalist">
+          <rect x="32" y="32" width="448" height="448" rx="96" fill="none" stroke="currentColor" stroke-width="16"/>
+          <text
+              x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
+              font-family="Georgia, 'Times New Roman', serif" font-size="300" fill="currentColor">K
+          </text>
+        </svg>
       </div>
       <a
           role="button"
