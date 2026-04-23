@@ -10,6 +10,12 @@ const shouldHideNavbar = computed(() => {
   return route.path === '/login';
 });
 
+const userSession = useUserSession();
+const displayName = computed(() => {
+  const email = userSession.value?.email;
+  return email ? email.split('@')[0] : '';
+});
+
 const toggleNavbar = () => {
   isActive.value = !isActive.value;
 };
@@ -28,7 +34,7 @@ const logout = async () => {
 <template>
   <nav v-if="!shouldHideNavbar" class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <div class="navbar-item">
+      <NuxtLink to="/" class="navbar-item" @click="closeNavbar">
         <svg width="64" height="64" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-label="Kapitalist">
           <rect x="32" y="32" width="448" height="448" rx="96" fill="none" stroke="currentColor" stroke-width="16"/>
           <text
@@ -36,7 +42,7 @@ const logout = async () => {
               font-family="Georgia, 'Times New Roman', serif" font-size="300" fill="currentColor">K
           </text>
         </svg>
-      </div>
+      </NuxtLink>
       <a
           role="button"
           aria-label="menu"
@@ -82,9 +88,9 @@ const logout = async () => {
           </div>
 
           <div class="navbar-dropdown is-right is-boxed">
-            <div class="navbar-item">
-              s.secure.one
-            </div>
+            <NuxtLink to="/profile" class="navbar-item" @click="closeNavbar">
+              {{ displayName }}
+            </NuxtLink>
             <hr class="navbar-divider">
             <NuxtLink to="/login" class="navbar-item" @click="logout">
               Logout
@@ -95,3 +101,9 @@ const logout = async () => {
     </div>
   </nav>
 </template>
+
+<style>
+.navbar-brand a.navbar-item:focus:not(:focus-visible) {
+  --bulma-navbar-item-background-a: 0;
+}
+</style>

@@ -3,10 +3,26 @@
 import {useApi} from "~/composables/useApi";
 import type {JobsModel} from "~/lib/apiModels";
 
-const {data: jobs, status, error} = await useApi<JobsModel[]>('/api/jobs');
+const {data: jobs, status, error, refresh} = await useApi<JobsModel[]>('/api/jobs');
 
 if (error.value?.statusCode === 401) {
   navigateTo('/login');
+}
+
+const running = ref<string | null>(null);
+const runError = ref<string | null>(null);
+
+async function runJob(name: string) {
+  running.value = name;
+  runError.value = null;
+  try {
+    await $fetch(`/api/jobs/${name}`, { method: 'POST' });
+    await refresh();
+  } catch (e) {
+    runError.value = (e as { data?: { message?: string } })?.data?.message ?? 'Failed to run job';
+  } finally {
+    running.value = null;
+  }
 }
 
 function parseDate(date: Date | string): string {
@@ -28,11 +44,20 @@ function addTrailingZero(num: number): string | number {
 
 <template>
   <app-external-data-loader :condition="status==='pending'" :number-of-lines="4" :lines-width="30" :error-message="error?.data?.message">
+    <p v-if="runError" class="has-text-danger is-size-7 mb-2">{{ runError }}</p>
     <table class="table is-narrow is-hoverable">
       <tbody>
       <tr v-for="job in jobs" :key="job.id">
         <td>{{ job.name }}:</td>
         <td>{{ parseDate(job.timestamp) }}</td>
+        <td class="has-text-right">
+          <button
+            class="button is-small is-success"
+            :class="{ 'is-loading': running === job.name }"
+            :disabled="running !== null"
+            @click="runJob(job.name)"
+          >Run</button>
+        </td>
       </tr>
       </tbody>
     </table>

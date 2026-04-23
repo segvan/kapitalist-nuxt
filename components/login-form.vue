@@ -7,6 +7,7 @@ import {saveUserSession} from "~/lib/localStorage";
 
 const router = useRouter();
 const route = useRoute();
+const userSession = useUserSession();
 
 const username = ref('');
 const password = ref('');
@@ -26,6 +27,7 @@ const handleLogin = async (e: Event) => {
 
     if (status.value === 'success') {
       saveUserSession(data.value);
+      userSession.value = data.value;
       const redirectUrl = route.query[LOGIN_REDIRECT_QS_NAME] || '/';
       await router.push(redirectUrl.toString());
       return;
