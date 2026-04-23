@@ -21,12 +21,8 @@ function toggleVisibility() {
 </script>
 
 <template>
-  <div class="table-container" :style="visible ? { overflowX: 'auto' } : {}">
   <div :class="visible ? 'is-overflow-y-hidden' : ''">
-    <table
-        class="table is-fullwidth is-narrow is-hoverable is-striped"
-        @click="toggleVisibility"
-    >
+    <table class="table is-fullwidth is-narrow is-hoverable is-striped" @click="toggleVisibility">
       <thead>
       <tr>
         <th scope="col">Currency</th>
@@ -99,7 +95,6 @@ function toggleVisibility() {
       </tr>
       </tbody>
     </table>
-  </div>
   </div>
 </template>
 
