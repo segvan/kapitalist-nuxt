@@ -57,3 +57,13 @@ model User {
   email    String @unique
   password String
 }
+
+model WalletBalance {
+  symbol      String   @id
+  qty         Decimal
+  value       Decimal
+  price       Decimal
+  dailyPnl    Decimal
+  dailyPnlPct Decimal
+  timestamp   DateTime
+}

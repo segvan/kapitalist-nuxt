@@ -5,6 +5,8 @@ import {clearUserSession} from "~/lib/localStorage.js";
 
 const route = useRoute();
 const isActive = ref(false);
+const adminMenuOpen = ref(false);
+const profileMenuOpen = ref(false);
 
 const shouldHideNavbar = computed(() => {
   return route.path === '/login';
@@ -22,6 +24,8 @@ const toggleNavbar = () => {
 
 const closeNavbar = () => {
   isActive.value = false;
+  adminMenuOpen.value = false;
+  profileMenuOpen.value = false;
 };
 
 const logout = async () => {
@@ -64,12 +68,16 @@ const logout = async () => {
           Home
         </NuxtLink>
 
+        <NuxtLink to="/wallet" class="navbar-item" @click="closeNavbar">
+          Wallet
+        </NuxtLink>
+
         <NuxtLink to="/jobs" class="navbar-item" @click="closeNavbar">
           Jobs History
         </NuxtLink>
 
-        <div class="navbar-item has-dropdown is-hoverable">
-          <div class="navbar-link is-arrowless">
+        <div class="navbar-item has-dropdown" :class="{ 'is-active': adminMenuOpen }">
+          <div class="navbar-link is-arrowless" @click="adminMenuOpen = !adminMenuOpen">
             Administration
           </div>
 
@@ -82,8 +90,8 @@ const logout = async () => {
       </div>
 
       <div class="navbar-end">
-        <div class="navbar-item has-dropdown is-hoverable">
-          <div class="navbar-link is-arrowless">
+        <div class="navbar-item has-dropdown" :class="{ 'is-active': profileMenuOpen }">
+          <div class="navbar-link is-arrowless" @click="profileMenuOpen = !profileMenuOpen">
             Profile
           </div>
 

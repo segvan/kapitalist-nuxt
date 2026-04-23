@@ -73,6 +73,7 @@ Three worker endpoints under `server/api/workers/` are triggered externally via 
 | `/api/workers/prices` | `lib/bots/pricesBot.ts` | Fetches all tracked symbol prices from Binance, upserts into `AssetPrices`, purges records older than 10 minutes |
 | `/api/workers/price-change` | `lib/bots/priceChangeBot.ts` | Fetches 24h tickers from Binance; sends a Telegram alert if `|priceChangePercent| > 5%` and the last alert for that symbol was more than 24 h ago (throttled via `PriceNotifications`) |
 | `/api/workers/trade-history` | `lib/bots/tradeHistoryBot.ts` | Syncs new trades from Binance since last known timestamp per symbol, saves to `Trades`, recomputes `TradesAggr`, sends Telegram notifications for new trades |
+| `/api/workers/wallet` | `lib/bots/walletBot.ts` | Fetches all non-zero account balances from Binance, joins with 24h ticker data, upserts into `WalletBalance` (stablecoins get price=1, PNL=0) |
 
 All bots call `saveJobRunTime()` on success to record execution in `JobsHistory`. Errors are caught and forwarded to Telegram via `printError()`.
 
@@ -83,7 +84,8 @@ Defined in `prisma/schema.prisma`. Read that file for the authoritative field li
 - `AssetPrices` — price snapshots over time
 - `Trades` — raw trade records from Binance
 - `TradesAggr` — per-symbol aggregated trade summary (qty, quoteQty, avgPrice)
-- `JobsHistory` — execution log for worker jobs
+- `JobsHistory` — execution log for worker jobs (auto-created on first run via upsert in `saveJobRunTime`)
+- `WalletBalance` — latest per-asset balances synced from Binance (`symbol` = coin code, e.g. `BTC`)
 - `PriceNotifications` — tracks when alerts were sent
 - `User` — application users (email + hashed password)
 
@@ -98,6 +100,38 @@ TLG_TOKEN_ID       # Telegram bot token
 TLG_CHAT_ID        # Telegram chat ID
 API_KEY            # Worker endpoint protection key
 ```
+
+### Sitemap
+
+#### Pages
+| Route | File | Description |
+|---|---|---|
+| `/` | `pages/index.vue` | Portfolio dashboard — asset prices, trade aggregates |
+| `/login` | `pages/login.vue` | Login form |
+| `/jobs` | `pages/jobs.vue` | Job run history + manual trigger buttons |
+| `/profile` | `pages/profile.vue` | User profile — email display, change password |
+| `/wallet` | `pages/wallet.vue` | Live wallet — total value, today's PNL, per-asset breakdown |
+| `/administration/assets` | `pages/administration/assets.vue` | Manage tracked assets (add/delete) |
+
+#### API Endpoints
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/login` | — | Authenticate; sets `session` cookie |
+| `POST` | `/api/logout` | JWT | Clear session cookie |
+| `GET` | `/api/assets` | JWT | List tracked assets |
+| `POST` | `/api/assets` | JWT | Add a tracked asset |
+| `DELETE` | `/api/assets/[id]` | JWT | Remove a tracked asset |
+| `GET` | `/api/asset-prices` | JWT | Latest price snapshots |
+| `GET` | `/api/trades-aggregates` | JWT | Per-symbol trade aggregates |
+| `GET` | `/api/jobs` | JWT | Job run history |
+| `POST` | `/api/jobs/[name]` | JWT | Manually trigger a job by name (case-insensitive, ignores whitespace) |
+| `GET` | `/api/profile` | JWT | Current user profile |
+| `PUT` | `/api/profile/password` | JWT | Change password |
+| `GET` | `/api/wallet` | JWT | Wallet balances + total value + today's PNL |
+| `POST` | `/api/workers/prices` | API key | Worker: sync asset prices |
+| `POST` | `/api/workers/price-change` | API key | Worker: check price changes, send alerts |
+| `POST` | `/api/workers/trade-history` | API key | Worker: sync trade history |
+| `POST` | `/api/workers/wallet` | API key | Worker: sync wallet balances from Binance account |
 
 ### Deployment
 Run on any Node.js server:

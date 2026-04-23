@@ -63,7 +63,7 @@ async function LoadData(tradesData: TradesAggregateModel[], prices: AssetPriceMo
 
 <template>
   <div class="columns is-desktop is-multiline">
-    <div class="column is-10 is-offset-1 block">
+    <div class="column is-12 block">
       <p class="subtitle">Summary</p>
       <app-external-data-loader
           :condition="tradesStatus==='pending' || pricesStatus==='pending'" :number-of-lines="4"
@@ -72,7 +72,7 @@ async function LoadData(tradesData: TradesAggregateModel[], prices: AssetPriceMo
         <TradesSummary :invested="invested" :current-val="currentVal" :realized-profit="realizedProfit"/>
       </app-external-data-loader>
     </div>
-    <div class="column is-10 is-offset-1 block">
+    <div class="column is-12 block">
       <p class="subtitle">Details</p>
       <app-external-data-loader
           :condition="tradesStatus==='pending' || pricesStatus==='pending'"

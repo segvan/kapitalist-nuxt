@@ -38,9 +38,10 @@ const changePassword = async () => {
 <template>
   <div>
     <div class="box">
-      <p class="label">Email</p>
-      <p v-if="status === 'pending'">Loading...</p>
-      <p v-else>{{ profile?.email }}</p>
+      <p class="title is-5">Email</p>
+      <app-external-data-loader :condition="status === 'pending'" :number-of-lines="1" :lines-width="40">
+        <p>{{ profile?.email }}</p>
+      </app-external-data-loader>
     </div>
 
     <div class="box">

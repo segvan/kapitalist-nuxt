@@ -2,11 +2,13 @@ import protectRoute from "~/server/protectRoute";
 import {run as runPricesBot} from "~/lib/bots/pricesBot";
 import {run as runPriceChangeBot} from "~/lib/bots/priceChangeBot";
 import {run as runTradeHistoryBot} from "~/lib/bots/tradeHistoryBot";
+import {run as runWalletBot} from "~/lib/bots/walletBot";
 
 const bots: Record<string, () => Promise<void>> = {
   pricesbot: runPricesBot,
   pricechangebot: runPriceChangeBot,
   tradehistorybot: runTradeHistoryBot,
+  walletbot: runWalletBot,
 };
 
 const normalize = (s: string) => s.replace(/\s+/g, '').toLowerCase();

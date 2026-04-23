@@ -83,4 +83,7 @@ async function seedJobSyncTime() {
   await prisma.jobsHistory.create({
     data: {id: 'TradeHistoryBot', name: 'Trade History Bot', timestamp: now}
   });
+  await prisma.jobsHistory.create({
+    data: {id: 'WalletBot', name: 'Wallet Bot', timestamp: now}
+  });
 }

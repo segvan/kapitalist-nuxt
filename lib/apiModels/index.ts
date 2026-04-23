@@ -21,3 +21,21 @@ export type SymbolModel = {
   Stable: string;
   Code: string;
 };
+
+export type WalletBalanceModel = {
+  symbol: string;
+  qty: number;
+  value: number;
+  price: number;
+  dailyPnl: number;
+  dailyPnlPct: number;
+  avgPrice: number | null;
+  timestamp: Date;
+};
+
+export type WalletModel = {
+  totalValue: number;
+  dailyPnl: number;
+  dailyPnlPct: number;
+  assets: WalletBalanceModel[];
+};
