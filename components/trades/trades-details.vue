@@ -52,11 +52,11 @@ function toggleVisibility() {
         <td :class="columnToggle">{{ trade.CurrentPrice.toFixed(2) }}</td>
         <!--Average Price-->
         <td
-            :class="[columnToggle, trade.Qty > 0 ? 'has-text-white' : '',
+            :class="[columnToggle,
               trade.Qty > 0
                 ? trade.CurrentPrice >= trade.AvgPrice
-                  ? 'has-background-success'
-                  : 'has-background-danger'
+                  ? 'has-text-success'
+                  : 'has-text-danger'
                 : ''
             ]"
         >
@@ -64,30 +64,30 @@ function toggleVisibility() {
         </td>
         <!--Current Value-->
         <td
-            :class="['has-text-white',
+            :class="[
               trade.CurrentValue >= trade.Invested
-                ? 'has-background-success'
-                : 'has-background-danger'
+                ? 'has-text-success'
+                : 'has-text-danger'
             ]"
         >
           {{ trade.CurrentValue.toFixed(2) }}
         </td>
         <!--Earnings-->
         <td
-            :class="['has-text-white',
+            :class="[
               totalEarnings(trade) >= 0
-                ? 'has-background-success'
-                : 'has-background-danger'
+                ? 'has-text-success'
+                : 'has-text-danger'
             ]"
         >
           {{ totalEarnings(trade).toFixed(2) }}
         </td>
         <!--Difference-->
         <td
-            :class="['has-text-white',
+            :class="[
               trade.Difference >= 0
-                ? 'has-background-success'
-                : 'has-background-danger'
+                ? 'has-text-success'
+                : 'has-text-danger'
             ]"
         >
           {{ trade.IsRecouped ? '-' : trade.Difference.toFixed(2) + ' %' }}

@@ -38,55 +38,55 @@ function toggleVisibility() {
       <tbody>
       <tr>
         <!--Invested-->
-        <td class="has-background-success has-text-white">
+        <td class="has-text-success">
           {{ props.invested.toFixed(2) }}
         </td>
         <!--Current Value-->
         <td
-            :class="['has-text-white',
+            :class="[
               props.currentVal >= props.invested
-                ? 'has-background-success'
-                : 'has-background-danger'
+                ? 'has-text-success'
+                : 'has-text-danger'
             ]"
         >
           {{ props.currentVal.toFixed(2) }}
         </td>
         <!--Unrealized Profit-->
         <td
-            :class="[columnToggle, 'has-text-white',
+            :class="[columnToggle,
               unrealizedProfit >= 0
-                ? 'has-background-success'
-                : 'has-background-danger'
+                ? 'has-text-success'
+                : 'has-text-danger'
             ]"
         >
           {{ unrealizedProfit.toFixed(2) }}
         </td>
         <!--Realized Profit-->
         <td
-            :class="[columnToggle, 'has-text-white',
+            :class="[columnToggle,
               props.realizedProfit >= 0
-                ? 'has-background-success'
-                : 'has-background-danger'
+                ? 'has-text-success'
+                : 'has-text-danger'
             ]"
         >
           {{ props.realizedProfit.toFixed(2) }}
         </td>
         <!--Total Value-->
         <td
-            :class="['has-text-white',
+            :class="[
               total >= props.invested
-                ? 'has-background-success'
-                : 'has-background-danger'
+                ? 'has-text-success'
+                : 'has-text-danger'
             ]"
         >
           {{ total.toFixed(2) }}
         </td>
         <!--Difference-->
         <td
-            :class="['has-text-white',
+            :class="[
               difference >= 0
-                ? 'has-background-success'
-                : 'has-background-danger'
+                ? 'has-text-success'
+                : 'has-text-danger'
             ]"
         >
           {{ difference.toFixed(2) }} %
