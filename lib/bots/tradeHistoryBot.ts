@@ -43,10 +43,10 @@ const getMyTrades = async (beginDates: Record<string, Date>, symbols: SymbolMode
       }
       return {asset: asset.Id, assetTrades: allTrades};
     } catch (e: unknown) {
-      if (e !== "Invalid symbol.") {
+      const msg = e instanceof Error ? e.message : typeof e === 'string' ? e : JSON.stringify(e);
+      if (!msg.includes('Invalid symbol')) {
         await printError("Trade History Bot Exception", e);
       }
-
       return {asset: asset.Id, assetTrades: []};
     }
   });
