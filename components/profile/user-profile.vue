@@ -64,7 +64,7 @@ const changePassword = async () => {
                 type="password"
                 placeholder="Current password"
                 required
-            />
+            >
           </div>
         </div>
 
@@ -78,7 +78,7 @@ const changePassword = async () => {
                 placeholder="New password (min 8 characters)"
                 minlength="8"
                 required
-            />
+            >
           </div>
         </div>
 
@@ -91,7 +91,7 @@ const changePassword = async () => {
                 type="password"
                 placeholder="Confirm new password"
                 required
-            />
+            >
           </div>
         </div>
 

@@ -1,65 +1,88 @@
-import {printError, roundNumber, runInBatches} from "../botsHelpers";
+import {printError, runInBatches} from "../botsHelpers";
 import {saveJobRunTime} from "../jobsHistoryRepository";
-import {binanceClient} from "../clients/binanceClient";
-import type {RestMarketTypes, RestTradeTypes} from "@binance/connector-typescript";
+import {binanceClient, simpleEarnClient} from "../clients/binanceClient";
+import type {SimpleEarnRestAPI} from "@binance/simple-earn";
 import prisma from "~/lib/prisma";
 
 type Balance = { asset: string; qty: number };
 
-type WalletEntry = {
-  symbol: string;
-  qty: number;
-  value: number;
-  price: number;
-  dailyPnl: number;
-  dailyPnlPct: number;
-};
-
-const fetchBalances = async (): Promise<Balance[]> => {
-  const response = await binanceClient.accountInformation({omitZeroBalances: true});
-  const data = response as RestTradeTypes.accountInformationResponse;
-  return data.balances.map(b => ({
-    asset: b.asset,
-    qty: parseFloat(b.free) + parseFloat(b.locked),
+const fetchSpotBalances = async (): Promise<Balance[]> => {
+  const data = await (await binanceClient.restAPI.getAccount({omitZeroBalances: true})).data();
+  return data.balances!.map(b => ({
+    asset: b.asset!,
+    qty: parseFloat(b.free!) + parseFloat(b.locked!),
   }));
 };
 
+const fetchAllPages = async <T>(
+  fetcher: (current: number) => Promise<{ rows?: T[]; total?: number | bigint }>
+): Promise<T[]> => {
+  const size = 100;
+  const all: T[] = [];
+  let current = 1;
+  while (true) {
+    const resp = await fetcher(current);
+    const rows = resp.rows ?? [];
+    all.push(...rows);
+    if (all.length >= Number(resp.total ?? 0) || rows.length < size) break;
+    current++;
+  }
+  return all;
+};
+
+const fetchEarnBalances = async (): Promise<Balance[]> => {
+  const [flexRows, lockedRows] = await Promise.all([
+    fetchAllPages<SimpleEarnRestAPI.GetFlexibleProductPositionResponseRowsInner>(
+      (current) => simpleEarnClient.restAPI.getFlexibleProductPosition({current, size: 100}).then(r => r.data())
+    ),
+    fetchAllPages<SimpleEarnRestAPI.GetLockedProductPositionResponseRowsInner>(
+      (current) => simpleEarnClient.restAPI.getLockedProductPosition({current, size: 100}).then(r => r.data())
+    ),
+  ]);
+
+  const map = new Map<string, number>();
+
+  for (const row of flexRows) {
+    if (!row.asset || !row.totalAmount) continue;
+    const qty = parseFloat(row.totalAmount);
+    if (qty > 0) map.set(row.asset, (map.get(row.asset) ?? 0) + qty);
+  }
+
+  for (const row of lockedRows) {
+    if (!row.asset || !row.amount) continue;
+    const qty = parseFloat(row.amount);
+    if (qty > 0) map.set(row.asset, (map.get(row.asset) ?? 0) + qty);
+  }
+
+  return Array.from(map.entries()).map(([asset, qty]) => ({asset, qty}));
+};
+
+const mergeBalances = (spot: Balance[], earn: Balance[]): Balance[] => {
+  const map = new Map<string, number>(spot.map(b => [b.asset, b.qty]));
+  for (const b of earn) {
+    map.set(b.asset, (map.get(b.asset) ?? 0) + b.qty);
+  }
+  return Array.from(map.entries()).map(([asset, qty]) => ({asset, qty}));
+};
+
 const bot = async (): Promise<void> => {
-  const stables = await prisma.stable.findMany();
-  const stableSet = new Set(stables.map(s => s.id));
-  const defaultStable = stables.find(s => s.isDefault)?.id ?? 'USDT';
+  const [spotBalances, earnBalances] = await Promise.all([
+    fetchSpotBalances(),
+    fetchEarnBalances(),
+  ]);
 
-  const balances = await fetchBalances();
-
-  const tickers = (await binanceClient.ticker24hr()) as RestMarketTypes.ticker24hrResponse[];
-  const tickerMap = new Map(tickers.map(t => [t.symbol, t]));
-
+  const balances = mergeBalances(spotBalances, earnBalances);
   const now = new Date();
-  const entries: WalletEntry[] = balances
-    .map(b => {
-      if (stableSet.has(b.asset)) {
-        return {symbol: b.asset, qty: b.qty, value: b.qty, price: 1, dailyPnl: 0, dailyPnlPct: 0};
-      }
-      const ticker = tickerMap.get(`${b.asset}${defaultStable}`);
-      if (!ticker) return null;
-      const price = parseFloat(ticker.lastPrice);
-      const prevClose = parseFloat(ticker.prevClosePrice);
-      const value = roundNumber(b.qty * price);
-      const dailyPnl = roundNumber(b.qty * (price - prevClose));
-      const dailyPnlPct = roundNumber(parseFloat(ticker.priceChangePercent));
-      return {symbol: b.asset, qty: b.qty, value, price, dailyPnl, dailyPnlPct};
-    })
-    .filter((e): e is WalletEntry => e !== null);
 
-  await runInBatches(entries, async (entry) => {
+  await runInBatches(balances, async (b) => {
     await prisma.walletBalance.upsert({
-      where: {symbol: entry.symbol},
-      update: {qty: entry.qty, value: entry.value, price: entry.price, dailyPnl: entry.dailyPnl, dailyPnlPct: entry.dailyPnlPct, timestamp: now},
-      create: {symbol: entry.symbol, qty: entry.qty, value: entry.value, price: entry.price, dailyPnl: entry.dailyPnl, dailyPnlPct: entry.dailyPnlPct, timestamp: now}
+      where: {symbol: b.asset},
+      update: {qty: b.qty, timestamp: now},
+      create: {symbol: b.asset, qty: b.qty, timestamp: now}
     });
   });
 
-  const activeSymbols = entries.map(e => e.symbol);
+  const activeSymbols = balances.map(b => b.asset);
   await prisma.walletBalance.deleteMany({where: {symbol: {notIn: activeSymbols}}});
 
   await saveJobRunTime("WalletBot", "Wallet Bot");

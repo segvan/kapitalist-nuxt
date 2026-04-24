@@ -25,9 +25,11 @@ model JobsHistory {
 }
 
 model AssetPrices {
-  id String @id
-  price Decimal
-  timestamp DateTime
+  id                 String   @id
+  price              Decimal
+  prevClosePrice     Decimal
+  priceChangePercent Decimal
+  timestamp          DateTime
 }
 
 model PriceNotifications {
@@ -59,11 +61,7 @@ model User {
 }
 
 model WalletBalance {
-  symbol      String   @id
-  qty         Decimal
-  value       Decimal
-  price       Decimal
-  dailyPnl    Decimal
-  dailyPnlPct Decimal
-  timestamp   DateTime
+  symbol    String   @id
+  qty       Decimal
+  timestamp DateTime
 }

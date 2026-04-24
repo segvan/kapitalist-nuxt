@@ -1,7 +1,7 @@
 import {printError, round, runInBatches} from "../botsHelpers"
 import {saveJobRunTime} from "../jobsHistoryRepository";
 import {binanceClient} from "../clients/binanceClient";
-import type {RestMarketTypes} from "@binance/connector-typescript";
+import type {SpotRestAPI} from "@binance/spot";
 import getSymbols from "../symbolsRepository";
 import * as telegramClient from "../clients/telegramClient";
 import prisma from "~/lib/prisma";
@@ -11,23 +11,21 @@ const differencePercent = 5;
 const messageFrequencyHours = 24;
 
 const getTickers = async (symbols: SymbolModel[]): Promise<Ticker[]> => {
-  const tasks = symbols.map((symbol) => {
-    return binanceClient.ticker24hr({symbol: symbol.Code, type: "FULL"});
+  const resp = await binanceClient.restAPI.ticker24hr({
+    symbols: symbols.map(s => s.Code),
+    type: "FULL" as SpotRestAPI.Ticker24hrTypeEnum
   });
+  const result = await resp.data() as SpotRestAPI.Ticker24hrResponse2Inner[];
 
-  const result = await Promise.all(tasks);
-
-  return result
-    .map(x => x as RestMarketTypes.ticker24hrResponse)
-    .map((x) => {
-      const symbol = symbols.find(s => s.Code === x.symbol) as SymbolModel;
-      return ({
-        Symbol: symbol.Id,
-        CloseTime: new Date(x.closeTime),
-        LastPrice: round(x.lastPrice),
-        PriceChangePercent: round(x.priceChangePercent)
-      });
+  return result.map((x) => {
+    const symbol = symbols.find(s => s.Code === x.symbol) as SymbolModel;
+    return ({
+      Symbol: symbol.Id,
+      CloseTime: new Date(x.closeTime as number),
+      LastPrice: round(x.lastPrice!),
+      PriceChangePercent: round(x.priceChangePercent!)
     });
+  });
 };
 
 const sendNotificationIfNeeded = async (ticker: Ticker, priceNotifications: PriceNotification[]): Promise<void> => {

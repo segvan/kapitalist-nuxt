@@ -27,8 +27,9 @@ async function addAsset() {
     await $fetch('/api/assets', {method: 'POST', body: {id: assetValue.value}});
     closeModal();
     emit('added');
-  } catch (e: any) {
-    error.value = e?.data?.message || 'Failed to add asset';
+  } catch (e) {
+    const err = e as {data?: {message?: string}};
+    error.value = err?.data?.message || 'Failed to add asset';
   } finally {
     isLoading.value = false;
   }

@@ -19,8 +19,9 @@ async function deleteAsset() {
     await $fetch(`/api/assets/${props.assetId}`, {method: 'DELETE'});
     isDialogOpened.value = false;
     emit('deleted');
-  } catch (e: any) {
-    error.value = e?.data?.message || 'Failed to delete asset';
+  } catch (e) {
+    const err = e as {data?: {message?: string}};
+    error.value = err?.data?.message || 'Failed to delete asset';
   } finally {
     isLoading.value = false;
   }

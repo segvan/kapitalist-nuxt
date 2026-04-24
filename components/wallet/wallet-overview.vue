@@ -49,7 +49,6 @@ const pnlSign = (val: number) => val >= 0 ? '+' : '';
             <tr style="white-space: nowrap">
               <th>Asset</th>
               <th :class="['has-text-right', columnToggle]">Amount</th>
-              <th :class="['has-text-right', columnToggle]">Avg Price</th>
               <th class="has-text-right">Value</th>
               <th class="has-text-right">Today's PNL</th>
             </tr>
@@ -58,10 +57,6 @@ const pnlSign = (val: number) => val >= 0 ? '+' : '';
             <tr v-for="asset in wallet.assets" :key="asset.symbol">
               <td><strong>{{ asset.symbol }}</strong></td>
               <td :class="['has-text-right', 'is-family-monospace', columnToggle]">{{ fmtQty(asset.qty) }}</td>
-              <td :class="['has-text-right', columnToggle]">
-                <span v-if="asset.avgPrice">${{ fmt(asset.avgPrice) }}</span>
-                <span v-else class="has-text-grey">—</span>
-              </td>
               <td class="has-text-right">${{ fmt(asset.value) }}</td>
               <td class="has-text-right" :class="pnlClass(asset.dailyPnl)">
                 {{ pnlSign(asset.dailyPnl) }}${{ fmt(Math.abs(asset.dailyPnl)) }}

@@ -19,7 +19,8 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@binance/connector-typescript": "^0.3.16",
+    "@binance/simple-earn": "^13.0.6",
+    "@binance/spot": "^29.0.0",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "bulma": "^1.0.4",

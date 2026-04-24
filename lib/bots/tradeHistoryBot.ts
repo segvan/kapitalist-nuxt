@@ -5,6 +5,7 @@ import getSymbols from "../symbolsRepository";
 import * as telegramClient from "../clients/telegramClient";
 import prisma from "~/lib/prisma";
 import type {SymbolModel} from "~/lib/apiModels";
+import type {SpotRestAPI} from "@binance/spot";
 
 const getBeginDates = async (): Promise<Record<string, Date>> => {
   const dates = await prisma.trades.groupBy(
@@ -19,15 +20,28 @@ const getBeginDates = async (): Promise<Record<string, Date>> => {
 }
 
 const getMyTrades = async (beginDates: Record<string, Date>, symbols: SymbolModel[]): Promise<Trade[]> => {
+  const limit = 1000;
+
   const tasks = symbols.map(async (asset) => {
-    const startTime = beginDates[asset.Id] ? beginDates[asset.Id].getTime() + 1 : 0
+    const beginDate = beginDates[asset.Id];
+    const startTime = beginDate ? beginDate.getTime() + 1 : undefined;
+    const allTrades: SpotRestAPI.MyTradesResponseInner[] = [];
+    let fromId: number | undefined = beginDate ? undefined : 0;
+
     try {
-      const trades = await binanceClient.accountTradeList(asset.Code, {
-        startTime: startTime,
-        limit: 1000,
-        recvWindow: 50000
-      });
-      return {asset: asset.Id, assetTrades: trades};
+      while (true) {
+        const resp = await binanceClient.restAPI.myTrades({
+          symbol: asset.Code,
+          ...(fromId !== undefined ? {fromId} : {startTime}),
+          limit,
+          recvWindow: 50000
+        });
+        const page = await resp.data();
+        allTrades.push(...page);
+        if (page.length < limit) break;
+        fromId = (page.at(-1)!.id as number) + 1;
+      }
+      return {asset: asset.Id, assetTrades: allTrades};
     } catch (e: unknown) {
       if (e !== "Invalid symbol.") {
         await printError("Trade History Bot Exception", e);
@@ -42,13 +56,13 @@ const getMyTrades = async (beginDates: Record<string, Date>, symbols: SymbolMode
   return trades.flatMap((trade) => {
     return trade.assetTrades.map((assetTrade) => {
       return {
-        Id: assetTrade.id,
+        Id: assetTrade.id as number,
         Symbol: trade.asset,
-        Time: new Date(assetTrade.time),
-        IsBuyer: assetTrade.isBuyer,
-        Qty: round(assetTrade.qty),
-        QuoteQty: round(assetTrade.quoteQty),
-        Price: round(assetTrade.price),
+        Time: new Date(assetTrade.time as number),
+        IsBuyer: assetTrade.isBuyer!,
+        Qty: round(assetTrade.qty!),
+        QuoteQty: round(assetTrade.quoteQty!),
+        Price: round(assetTrade.price!),
       };
     });
   });

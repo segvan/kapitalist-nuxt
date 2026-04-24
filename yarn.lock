@@ -238,11 +238,31 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.28.5"
 
-"@binance/connector-typescript@^0.3.16":
-  version "0.3.16"
-  resolved "https://registry.yarnpkg.com/@binance/connector-typescript/-/connector-typescript-0.3.16.tgz#45a455587c69930a50a50611dab628b163825691"
-  integrity sha512-KAVxj/BAtLNl+PwniwRBfeespB1vLyp6tfa3y1oXbtIuwNFbPSn5P1A0mu9n5523Vg3lKGk9pfIKugPG+E4eKA==
+"@binance/common@2.3.12":
+  version "2.3.12"
+  resolved "https://registry.yarnpkg.com/@binance/common/-/common-2.3.12.tgz#eb73c5dd70010df2640b41ff9c08eac0ea6aeaa1"
+  integrity sha512-BH7YGBhznlaE3HBi0M+gLofemWfPCjK8XWA8HvbnV4F64HOGRhVznPvkH1d+sMpK7d7MGdzJCqgvKF9K/+VY9A==
   dependencies:
+    "@types/ws" "^8.5.5"
+    axios "^1.7.4"
+    json-with-bigint "^3.4.4"
+    ws "^8.17.1"
+
+"@binance/simple-earn@^13.0.6":
+  version "13.0.6"
+  resolved "https://registry.yarnpkg.com/@binance/simple-earn/-/simple-earn-13.0.6.tgz#707af4ad8c274c6cade0618d7001ba989a449b81"
+  integrity sha512-LAJXz23SRi16TCX+o9Ffhr5S9odhLnPPOjvy5Yo+Y0XfFc0hgOEMDKu7u0PC6ojl/JVnuJba2LxEmAror1aJIw==
+  dependencies:
+    "@binance/common" "2.3.12"
+    axios "^1.7.4"
+
+"@binance/spot@^29.0.0":
+  version "29.0.0"
+  resolved "https://registry.yarnpkg.com/@binance/spot/-/spot-29.0.0.tgz#60c998368dae3b2491a7bedac90ed8be8db451dc"
+  integrity sha512-sSBCNU9BSQS40IewizH6BLvkdhVGhESg26hUk9ZBFP/RAA+DAaVf1EjRUCpPKBs3IaehavLqCNl6ULLZQx/BXQ==
+  dependencies:
+    "@binance/common" "2.3.12"
+    "@types/ws" "^8.5.5"
     axios "^1.7.4"
     ws "^8.17.1"
 
@@ -1919,6 +1939,13 @@
   version "1.20.2"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.20.2.tgz#97d26e00cd4a0423b4af620abecf3e6f442b7975"
   integrity sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==
+
+"@types/ws@^8.5.5":
+  version "8.18.1"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-8.18.1.tgz#48464e4bf2ddfd17db13d845467f6070ffea4aa9"
+  integrity sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==
+  dependencies:
+    "@types/node" "*"
 
 "@typescript-eslint/eslint-plugin@^8.56.1":
   version "8.59.0"
@@ -4369,6 +4396,11 @@ json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==
+
+json-with-bigint@^3.4.4:
+  version "3.5.8"
+  resolved "https://registry.yarnpkg.com/json-with-bigint/-/json-with-bigint-3.5.8.tgz#1b1edb55a1bc4816ca87ac684297591acd822383"
+  integrity sha512-eq/4KP6K34kwa7TcFdtvnftvHCD9KvHOGGICWwMFc4dOOKF5t4iYqnfLK8otCRCRv06FXOzGGyqE8h8ElMvvdw==
 
 json5@^2.2.3:
   version "2.2.3"
