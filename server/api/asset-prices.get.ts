@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
     return {
       id: price.id,
       price: price.price.toNumber(),
+      priceChangePercent: price.priceChangePercent.toNumber(),
       timestamp: price.timestamp,
     } as AssetPriceModel
   });

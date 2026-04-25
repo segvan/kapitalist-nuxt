@@ -21,6 +21,8 @@ const fmtQty = (val: number) => {
 
 const pnlClass = (val: number) => val >= 0 ? 'has-text-success' : 'has-text-danger';
 const pnlSign = (val: number) => val >= 0 ? '+' : '';
+
+const sortedAssets = computed(() => [...(wallet.value?.assets ?? [])].sort((a, b) => b.value - a.value));
 </script>
 
 <template>
@@ -54,7 +56,7 @@ const pnlSign = (val: number) => val >= 0 ? '+' : '';
             </tr>
           </thead>
           <tbody>
-            <tr v-for="asset in wallet.assets" :key="asset.symbol">
+            <tr v-for="asset in sortedAssets" :key="asset.symbol">
               <td><strong>{{ asset.symbol }}</strong></td>
               <td :class="['has-text-right', 'is-family-monospace', columnToggle]">{{ fmtQty(asset.qty) }}</td>
               <td class="has-text-right">${{ fmt(asset.value) }}</td>

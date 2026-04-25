@@ -5,6 +5,8 @@ import type {JobsModel} from "~/lib/apiModels";
 
 const {data: jobs, status, error, refresh} = await useApi<JobsModel[]>('/api/jobs');
 
+const sortedJobs = computed(() => [...(jobs.value ?? [])].sort((a, b) => a.name.localeCompare(b.name)));
+
 if (error.value?.statusCode === 401) {
   navigateTo('/login');
 }
@@ -48,7 +50,7 @@ function addTrailingZero(num: number): string | number {
     <div class="table-container">
     <table class="table is-fullwidth is-narrow is-hoverable">
       <tbody>
-      <tr v-for="job in jobs" :key="job.id">
+      <tr v-for="job in sortedJobs" :key="job.id">
         <td>{{ job.name }}:</td>
         <td>{{ parseDate(job.timestamp) }}</td>
         <td class="has-text-right">

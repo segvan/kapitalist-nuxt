@@ -47,6 +47,18 @@ const logout = async () => {
           </text>
         </svg>
       </NuxtLink>
+      <NuxtLink to="/" class="navbar-item" @click="closeNavbar">
+        Home
+      </NuxtLink>
+
+      <NuxtLink to="/wallet" class="navbar-item" @click="closeNavbar">
+        Wallet
+      </NuxtLink>
+
+      <NuxtLink to="/market" class="navbar-item" @click="closeNavbar">
+        Market
+      </NuxtLink>
+
       <a
           role="button"
           aria-label="menu"
@@ -64,14 +76,6 @@ const logout = async () => {
 
     <div :id="'navbarMenu'" :class="`navbar-menu ${isActive ? 'is-active' : ''}`">
       <div class="navbar-start">
-        <NuxtLink to="/" class="navbar-item" @click="closeNavbar">
-          Home
-        </NuxtLink>
-
-        <NuxtLink to="/wallet" class="navbar-item" @click="closeNavbar">
-          Wallet
-        </NuxtLink>
-
         <NuxtLink to="/jobs" class="navbar-item" @click="closeNavbar">
           Jobs History
         </NuxtLink>

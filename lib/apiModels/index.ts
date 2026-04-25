@@ -6,7 +6,7 @@ export type AssetModel = { id: string; };
 
 export type JobsModel = { id: string; name: string; timestamp: Date; };
 
-export type AssetPriceModel = { id: string; price: number; timestamp: Date; };
+export type AssetPriceModel = { id: string; price: number; priceChangePercent: number; timestamp: Date; };
 
 export type TradesAggregateModel = {
   symbol: string;
